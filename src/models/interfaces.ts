@@ -19,6 +19,7 @@ export interface QuizState {
     currentQuestion: Question | null;
     players: Player[];
     quizActive: boolean;
+    roomCode:string,
     // ...
 }
  

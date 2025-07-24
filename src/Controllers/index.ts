@@ -1,14 +1,15 @@
 
 // src/controllers/index.ts (para agrupar e registrar todos os handlers)
 import { Server as SocketIOServer, Socket } from 'socket.io';
-import { handlePlayerJoin, handlePlayerDisconnect } from './playerController';
-import { handleSubmitAnswer, handleQuizStart } from './quizController';
+import { handlePlayerJoin, handlePlayerDisconnect } from '../Player/controller/playerController';
+import { handleSubmitAnswer, handleQuizStart } from '../Quiz/controller/quizController';
 import { logInfo, logDebug, logError } from '../utils/logger';
+import { ConnectionEvents } from '../utils/connectionEvents';
 
 const SENDER_NAME = "IndexController"
 
 export const registerSocketHandlers = (io: SocketIOServer) => {
-    io.on('connection', (socket: Socket) => {
+    io.on('connect', (socket: Socket) => {
         logInfo(SENDER_NAME, `Socket conectado: ${socket.id}. Transport ${socket.handshake}; IP: ${socket.handshake.address}`);
 
         // logInfo(SENDER_NAME, `Handshake Query: ${JSON.stringify(socket.handshake.query)}`);
@@ -19,6 +20,8 @@ export const registerSocketHandlers = (io: SocketIOServer) => {
         handlePlayerDisconnect(socket);
         handleSubmitAnswer(socket);
         handleQuizStart(socket); // Somente para admins ou um evento de início de quiz
+        
+        socket.emit(ConnectionEvents.Connecting, {message:"Connection Stablished"});
 
         socket.on('disconnect', (reason: string) => {
             logInfo(SENDER_NAME, `DESCONEXÃO. ID do Socket: ${socket.id}. Razão: ${reason}`);
