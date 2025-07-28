@@ -1,21 +1,23 @@
 import { Player } from "../models/interfaces";
+import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room } from "./Room";
 
 export class RoomService {
     Rooms: Array<Room> = [];
 
-    public CreateRoom(hostID: string, roomCode: string): Room | null {
+    public CreateRoom(request:CreateRoomRequest): Room | null {
         //VALIDATE HOST ID
 
-        if (hostID == 'null' || !hostID) {
+        if (request.hostID == 'null' || !request.hostID) {
             console.error("Failure on create room: Host not identified");
             return null;
         }
-        console.log(`[RoomService]: Creating Room.. hostID:${hostID}`);
+        console.log(`[RoomService]: Creating Room.. hostID:${request.hostID}`);
         const newRoom: Room = new Room();
-        newRoom.hostID = hostID;
-        newRoom.roomCode = roomCode;
-        newRoom.roomID = String(Math.random()*1223);
+        newRoom.hostID = request.hostID;
+        newRoom.roomCode = this.GenerateRoomCode();
+        newRoom.maxPlayers = request.maxPlayers; 
+        newRoom.roomID = String(Math.random() * 1223);
 
         this.Rooms.push(newRoom);
         return newRoom;
@@ -32,13 +34,24 @@ export class RoomService {
 
     public AddPlayer(roomCode: string, newPlayer: Player) {
         var room = this.GetRoomByCode(roomCode);
-        if (!room) {
-            room = this.CreateRoom(newPlayer.id, roomCode);
-            console.log(room?.hostID);
-        }
-
+        
         room?.AddPlayer(newPlayer);
         // this.players.push(newPlayer);
     }
+
+    public GenerateRoomCode(): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 5 ; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    if(this.GetRoomByCode(result)!= null){
+        result = this.GenerateRoomCode();
+    }
+
+    return result;
+}
 
 }

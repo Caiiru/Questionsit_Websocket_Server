@@ -6,6 +6,7 @@ import { Player } from '../../models/interfaces';
 import { ConnectionEvents } from '../../utils/connectionEvents';
 import { RoomService } from '../../Room/RoomService';
 import { Room } from '../../Room/Room';
+import { CreateRoomRequest } from '../../Room/requests/CreateRoomRequest';
 
 const SENDER_NAME = "PlayerController";
 
@@ -13,18 +14,24 @@ export const handlePlayerJoin = (socket: Socket) => {
 
     var roomService: RoomService = new RoomService();
 
-    io.on(ConnectionEvents.HostGame, (data: { roomCode: string, playerID: string },) => {
-        if(roomService.GetRoomByCode(data.roomCode)){
-            //Already Exist
-            socket.emit(ConnectionEvents.RoomCreationFailure);
-        }
-        roomService.CreateRoom(data.playerID,data.roomCode);
+    io.on(ConnectionEvents.HostGame, (data:CreateRoomRequest,) => {
+        // if(roomService.GetRoomByCode(data)){
+        //     //Already Exist
+        //     socket.emit(ConnectionEvents.RoomCreationFailure);
+        // }
 
-        socket.rooms.add(data.roomCode);
-        socket.join(data.roomCode);
+
+        let room = roomService.CreateRoom(data);
+        if(!room){
+            socket.emit(ConnectionEvents.RoomCreationFailure);
+            return;
+        }
+        socket.rooms.add(room?.roomCode);
+        socket.join(room.roomCode);
 
         socket.emit(ConnectionEvents.RoomCreationSuccess)
     });
+    
 
     io.on(ConnectionEvents.JoinGame, (data: { roomCode: string, username: string, playerID: string, },) => {
 
@@ -45,6 +52,7 @@ export const handlePlayerJoin = (socket: Socket) => {
             socketId: socket.id
         };
         socket.rooms.add(data.roomCode);
+        
         socket.join(data.roomCode);
 
         // socket.to(data.roomCode).emit(ConnectionEvents.RoomJoinSucess);
