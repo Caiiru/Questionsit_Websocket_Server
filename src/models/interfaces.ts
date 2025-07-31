@@ -1,9 +1,16 @@
- 
-export interface Player {
+
+export interface QuizClient {
+
     id: string;
     name: string;
-    score: number;
     socketId: string;
+
+}
+export interface Host extends QuizClient {
+
+}
+export interface Player extends QuizClient {
+    score: number;
     // ... outros atributos do jogador
 }
 
@@ -19,10 +26,10 @@ export interface QuizState {
     currentQuestion: Question | null;
     players: Player[];
     quizActive: boolean;
-    roomCode:string,
+    roomCode: string,
     // ...
 }
- 
+
 export interface SocketEvents {
     'joinGame': (data: { playerName: string }) => void;
     'submitAnswer': (data: { questionId: string; answer: string }) => void;

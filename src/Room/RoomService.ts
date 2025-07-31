@@ -1,4 +1,4 @@
-import { Player } from "../models/interfaces";
+import { Player, QuizClient } from "../models/interfaces";
 import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room } from "./Room";
 
@@ -12,12 +12,13 @@ export class RoomService {
             console.error("Failure on create room: Host not identified");
             return null;
         }
-        console.log(`[RoomService]: Creating Room.. hostID:${request.hostID}`);
         const newRoom: Room = new Room();
         newRoom.hostID = request.hostID;
         newRoom.roomCode = this.GenerateRoomCode();
         newRoom.maxPlayers = request.maxPlayers; 
         newRoom.roomID = String(Math.random() * 1223);
+
+        console.log(`[RoomService]: Creating Room.. hostID: ${request.hostID} / Max Players: ${newRoom.maxPlayers}, RoomCode ${newRoom.roomCode}`);
 
         this.Rooms.push(newRoom);
         return newRoom;
@@ -37,6 +38,10 @@ export class RoomService {
         
         room?.AddPlayer(newPlayer);
         // this.players.push(newPlayer);
+    }
+    public AddClient(roomCode:string, newClient:QuizClient){
+        var room = this.GetRoomByCode(roomCode);
+        room?.AddClient(newClient);
     }
 
     public GenerateRoomCode(): string {
