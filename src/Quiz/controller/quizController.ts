@@ -1,7 +1,7 @@
 
 // src/controllers/quizController.ts
 import { Socket } from 'socket.io';
-import { quizService } from '../../services/quizService';
+import { quizService } from '../quizService';
 import { io } from '../../app';
 
 export const handleSubmitAnswer = (socket: Socket) => {

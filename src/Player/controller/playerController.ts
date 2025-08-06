@@ -1,6 +1,6 @@
 // src/controllers/playerController.ts
 import { Socket } from 'socket.io';
-import { quizService } from '../../services/quizService';
+import { quizService } from '../../Quiz/quizService';
 import { io } from '../../app'; // Para emitir eventos para todos os clientes
 import { Host, Player } from '../../models/interfaces';
 import { ConnectionEvents } from '../../utils/connectionEvents';
@@ -19,14 +19,7 @@ export const handlePlayerJoin = (socket: Socket) => {
 
 
     socket.on(ConnectionEvents.HostGame, (data: HostRequest,) => {
-        // if(roomService.GetRoomByCode(data)){
-        //     //Already Exist
-        //     socket.emit(ConnectionEvents.RoomCreationFailure);
-        // }
-
-        // console.log(data);
-
-
+        
         let room = roomService.CreateRoom(data as CreateRoomRequest);
         if (!room) {
             socket.emit(ConnectionEvents.RoomCreationFailure);
@@ -98,8 +91,7 @@ export const handlePlayerJoin = (socket: Socket) => {
 
 export const handlePlayerDisconnect = (socket: Socket) => {
     socket.on('disconnect', () => {
-        console.log(`Um usuário desconectado: ${socket.id}`);
-        // const player = quizService.
+        console.log(`Um usuário desconectado: ${socket.id}`); 
 
         quizService.removePlayerBySockedID(socket.id);
 
