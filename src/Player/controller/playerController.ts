@@ -1,8 +1,6 @@
-// src/controllers/playerController.ts
+
 import { Socket } from 'socket.io';
-import { quizService } from '../../Quiz/quizService';
-import { io } from '../../app'; // Para emitir eventos para todos os clientes
-import { Host, Player } from '../../models/interfaces';
+import { io } from '../../app';
 import { ConnectionEvents } from '../../utils/connectionEvents';
 import { RoomService } from '../../Room/RoomService';
 import { HostRequest } from './requests/HostRequest'
@@ -10,6 +8,7 @@ import { logError, logInfo } from '../../utils/logger';
 import { CreateRoomRequest } from '../../Room/requests/CreateRoomRequest';
 import { HostResponse } from './responses/HostResponse';
 import { ConnectionResponse } from './responses/ConnectionResponse';
+import { Host, Player } from '../model/Client';
 
 const SENDER_NAME = "PlayerController";
 
@@ -60,7 +59,8 @@ export const handlePlayerJoin = (socket: Socket) => {
             id: data.playerID,
             name: data.username,
             score: 0,
-            socketId: socket.id
+            socketId: socket.id,
+            cards:'0,0'
         }; 
 
         room.AddPlayer(newPlayer);
@@ -93,11 +93,11 @@ export const handlePlayerDisconnect = (socket: Socket) => {
     socket.on('disconnect', () => {
         console.log(`Um usuário desconectado: ${socket.id}`); 
 
-        quizService.removePlayerBySockedID(socket.id);
+        // quizService.removePlayerBySockedID(socket.id);
 
         if ((socket as any).playerName) {
             io.emit(`${ConnectionEvents.PlayerLeft}`, { playerName: (socket as any).playerName, playerId: socket.id });
         }
-        io.emit(`${ConnectionEvents.UpdatePlayers}`, quizService.getCurrentQuizState().players);
+        // io.emit(`${ConnectionEvents.UpdatePlayers}`, quizService.getCurrentQuizState().players);
     });
 };

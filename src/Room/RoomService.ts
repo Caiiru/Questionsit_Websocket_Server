@@ -1,4 +1,4 @@
-import { Player, QuizClient } from "../models/interfaces";
+import { Player, QuizClient } from "../Player/model/Client";
 import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room } from "./Room";
 

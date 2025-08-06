@@ -1,8 +1,7 @@
 
 // src/controllers/index.ts (para agrupar e registrar todos os handlers)
 import { Server as SocketIOServer, Socket } from 'socket.io';
-import { handlePlayerJoin, handlePlayerDisconnect } from '../Player/controller/playerController';
-import { handleSubmitAnswer, handleQuizStart } from '../Quiz/controller/quizController';
+import { handlePlayerJoin, handlePlayerDisconnect } from '../Player/controller/playerController'; 
 import { logInfo, logDebug, logError } from '../utils/logger';
 import { ConnectionEvents } from '../utils/connectionEvents';
 
@@ -18,8 +17,8 @@ export const registerSocketHandlers = (io: SocketIOServer) => {
         // Registra todos os handlers para este socket
         handlePlayerJoin(socket);
         handlePlayerDisconnect(socket);
-        handleSubmitAnswer(socket);
-        handleQuizStart(socket); // Somente para admins ou um evento de início de quiz
+        // handleSubmitAnswer(socket);
+        // handleQuizStart(socket); // Somente para admins ou um evento de início de quiz
         
         socket.emit(ConnectionEvents.Connecting, {message:"Connection Stablished"});
 

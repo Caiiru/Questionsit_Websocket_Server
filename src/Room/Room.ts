@@ -1,4 +1,4 @@
-import { QuizClient, Host, Player } from "../models/interfaces";
+import { QuizClient, Host, Player } from "../Player/model/Client";
 import { Quiz } from "../Quiz/Quiz";
 import { logInfo } from "../utils/logger";
 
