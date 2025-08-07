@@ -2,7 +2,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import { registerSocketHandlers } from './Controllers';
+import { IndexController } from './Controllers';
 import { logInfo, logError } from './utils/logger';
 
 export const app = express();
@@ -19,7 +19,8 @@ app.get('/', (req, res) => {
     res.send('<h1>Servidor de Quiz WebSocket está rodando!</h1>');
 });
 
-registerSocketHandlers(io);
+const indexController = new IndexController();
+indexController.registerSocketHandlers(io); 
 
 export const startServer = (port: number) => {
     httpServer.listen(port, () => {

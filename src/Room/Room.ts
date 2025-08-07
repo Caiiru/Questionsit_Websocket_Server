@@ -12,6 +12,9 @@ export class Room {
     players: Array<Player> = [];
     maxPlayers:number = 1;
     quiz: Quiz = new Quiz();
+    currentState:RoomState = RoomState.Lobby;
+    currentQuestion:number = 0;
+
     
     public Room(hostID:string,roomID:string, roomCode:string, quiz:Quiz, maxPlayers:number){
         this.hostID = hostID;
@@ -21,6 +24,8 @@ export class Room {
         this.maxPlayers = maxPlayers;
         this.players = new Array<Player>();
         this.clients = new Array<QuizClient>();
+        this.currentState = RoomState.Lobby;
+        this.currentQuestion = 0;
     }
     public AddClient(newClient:QuizClient){
         this.clients.push(newClient);
@@ -40,4 +45,13 @@ export class Room {
     }
 
     
+}
+
+export enum RoomState{
+    Lobby="Lobby",
+    Question="ShowingQuestion",
+    Answers="ShowingAnswers",
+    Rank="ShowingRank",
+    Cards="CardsChoice",
+
 }

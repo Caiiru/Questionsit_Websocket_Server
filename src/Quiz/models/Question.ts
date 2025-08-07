@@ -3,7 +3,8 @@ export interface Question {
     type:number;
     time:number;
     headerText: string;
-    answers:Answer[];
+    answers:Answer[]; 
+    
     // ...
 }
 export interface Answer{
