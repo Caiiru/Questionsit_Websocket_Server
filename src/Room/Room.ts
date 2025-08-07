@@ -1,5 +1,5 @@
 import { QuizClient, Host, Player } from "../Player/model/Client";
-import { Quiz } from "../Quiz/Quiz";
+import { Quiz } from "../Quiz/Grasp";
 import { logInfo } from "../utils/logger";
 
 const SENDER_NAME = "Room";
