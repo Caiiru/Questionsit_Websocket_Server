@@ -1,0 +1,142 @@
+{
+    "Grasp": {
+        "name": "Conhecimento Geral Básico",
+        "questions": [
+            {
+                "question": "Qual a capital da Australia?",
+                "type": 0,
+                "time": 30,
+                "answers": [
+                    {
+                        "answer": "Sidney",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Camberra",
+                        "correct": 1,
+                        "points": 100
+                    },
+                    {
+                        "answer": "Melbourne",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Montreal",
+                        "correct": 0,
+                        "points": 0
+                    }
+                ]
+            },
+            {
+                "question": "Quantos ossos tem o corpo humano adulto?",
+                "type": 0,
+                "time": 30,
+                "answers": [
+                    {
+                        "answer": "206",
+                        "correct": 1,
+                        "points": 1000
+                    },
+                    {
+                        "answer": "300",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "150",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "450",
+                        "correct": 0,
+                        "points": 0
+                    }
+                ]
+            },
+            {
+                "question": "Quem pintou a Mona Lisa?",
+                "type": 0,
+                "time": 30,
+                "answers": [
+                    {
+                        "answer": "Vincent van Gogh",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Pablo Picasso",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Leonardo da Vinci",
+                        "correct": 1,
+                        "points": 100
+                    },
+                    {
+                        "answer": "Claude Monet",
+                        "correct": 0,
+                        "points": 0
+                    }
+                ]
+            },
+            {
+                "question": "Qual o maior planeta do nosso sistema solar?",
+                "type": 0,
+                "time": 30,
+                "answers": [
+                    {
+                        "answer": "Marte",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Júpiter",
+                        "correct": 1,
+                        "points": 100
+                    },
+                    {
+                        "answer": "Terra",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Saturno",
+                        "correct": 0,
+                        "points": 0
+                    }
+                ]
+            },
+            {
+                "question": "Qual é a capital do Japão?",
+                "type": 0,
+                "time": 30,
+                "answers": [
+                    {
+                        "answer": "Pequim",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Seul",
+                        "correct": 0,
+                        "points": 0
+                    },
+                    {
+                        "answer": "Tóquio",
+                        "correct": 1,
+                        "points": 100
+                    },
+                    {
+                        "answer": "Bangkok",
+                        "correct": 0,
+                        "points": 0
+                    }
+                ]
+            }
+        ]
+    }
+}
