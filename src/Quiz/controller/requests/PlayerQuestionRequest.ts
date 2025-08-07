@@ -1,5 +1,4 @@
-export interface PlayerQuestionRequest{
-    playerID:string,
+export interface PlayerQuestionRequest{ 
     roomID:string,
     questionNumber:number
 }

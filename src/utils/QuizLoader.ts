@@ -46,11 +46,10 @@ export class QuizLoader {
             }
             newGrasp.questions.push(question);
         }
-        // newGrasp.questions = quizData.questions;
-        newGrasp.hostID = "12431241221";
+        // newGrasp.questions = quizData.questions; 
  
 
-        console.log(this.GetStringFromQuiz(newGrasp));
+        // console.log(this.GetStringFromQuiz(newGrasp));
 
         return newGrasp;
     }

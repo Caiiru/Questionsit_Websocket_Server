@@ -1,9 +1,9 @@
 
 // src/controllers/index.ts (para agrupar e registrar todos os handlers)
-import { Server as SocketIOServer, Socket } from 'socket.io';
-import { handlePlayerJoin, handlePlayerDisconnect } from '../Player/controller/playerController'; 
+import { Server as SocketIOServer, Socket } from 'socket.io'; 
 import { logInfo, logDebug, logError } from '../utils/logger';
 import { ConnectionEvents } from '../utils/connectionEvents';
+import { handlePlayerDisconnect, handlePlayerJoin } from '../Player/controller/playerController';
 
 const SENDER_NAME = "IndexController"
 

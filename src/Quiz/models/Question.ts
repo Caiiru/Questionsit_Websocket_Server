@@ -8,6 +8,6 @@ export interface Question {
 }
 export interface Answer{
     text:string;
-    correct:boolean;
+    correct:number;
     points:number;
 }

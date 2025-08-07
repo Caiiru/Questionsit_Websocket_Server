@@ -16,7 +16,7 @@ var roomService: RoomService = new RoomService();
 
 export const handlePlayerJoin = (socket: Socket) => {
 
-
+    
     socket.on(ConnectionEvents.HostGame, (data: HostRequest,) => {
         
         let room = roomService.CreateRoom(data as CreateRoomRequest);

@@ -1,4 +1,5 @@
 import { Player, QuizClient } from "../Player/model/Client";
+import { QuizLoader } from "../utils/QuizLoader";
 import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room } from "./Room";
 
@@ -17,9 +18,15 @@ export class RoomService {
         newRoom.roomCode = this.GenerateRoomCode();
         newRoom.maxPlayers = request.maxPlayers;
         newRoom.roomID = String(Math.random() * 1223);
+        
+        //GET ROOM FROM SERVER RESTFUL
+        const _quiz = new QuizLoader().StartQuizLoader();
+        if(_quiz!=null){
+            newRoom.quiz = _quiz;
+        } 
 
         console.log(`[RoomService]: Creating Room.. hostID: ${request.hostID} / Max Players: ${newRoom.maxPlayers}, RoomCode ${newRoom.roomCode}`);
-
+        console.log(`[RoomService]: Grasp: ${newRoom.quiz.graspName}`);
         this.Rooms.push(newRoom);
         return newRoom;
     }
