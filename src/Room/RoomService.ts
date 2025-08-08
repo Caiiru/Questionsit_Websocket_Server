@@ -71,7 +71,7 @@ export class RoomService {
 
         if (!this.ChangeRoomState(_room, RoomState.Question)) return null;
 
-        const _questionResponse: QuestionResponse | null = this.GetCurrentRoomQuestionByRoomCode(quizRequest.roomCode);
+        const _questionResponse: QuestionResponse | null = this.GetCurrentRoomQuestion(_room);
 
         if (!_questionResponse || _questionResponse == null) return null;
 
