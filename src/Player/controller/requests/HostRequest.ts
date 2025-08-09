@@ -3,4 +3,5 @@ export interface HostRequest{
     hostID:string,
     quizID:string,
     maxPlayers:number,
+    roomCode?:string,
 } 

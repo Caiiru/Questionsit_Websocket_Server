@@ -4,11 +4,14 @@ import { io } from '../../app';
 import { ConnectionEvents } from '../../events/connectionEvents';
 import { RoomService } from '../../Room/RoomService';
 import { HostRequest } from './requests/HostRequest'
-import { logError, logInfo } from '../../utils/logger';
+import { logDebug, logError, logInfo } from '../../utils/logger';
 import { CreateRoomRequest } from '../../Room/requests/CreateRoomRequest';
 import { HostResponse } from './responses/HostResponse';
 import { ConnectionResponse } from './responses/ConnectionResponse';
 import { Host, Player } from '../model/Client';
+import { playerEvents } from '../../events/playerEvents';
+import { PlayerAnswerRequest } from '../../Quiz/controller/requests/PlayerAnswerRequest';
+import { quizService } from '../../Quiz/QuizService';
 
 const SENDER_NAME = "PlayerController";
 
@@ -78,23 +81,34 @@ export class PlayerController {
 
             }
 
+            io.to(data.roomCode).emit(`${ConnectionEvents.UpdatePlayers}`, playersList); // Envia lista atual de jogadores
             socket.emit(`${ConnectionEvents.RoomJoinSuccess}`, connectionResponse as ConnectionResponse);
 
-            io.to(data.roomCode).emit(`${ConnectionEvents.UpdatePlayers}`, playersList); // Envia lista atual de jogadores
-
+            logDebug(SENDER_NAME, `${newPlayer.name} joined room: ${room.roomCode}`);
         });
 
     };
 
+    public handlePlayerAnswer = (socket:Socket) => {
+        socket.on(playerEvents.SUBMIT_ANSWER, (data:PlayerAnswerRequest)=> {
+
+            
+
+        });
+    }
+
     public handlePlayerDisconnect = (socket: Socket) => {
         socket.on('disconnect', () => {
             console.log(`Um usuário desconectado: ${socket.id}`);
-
+            
             // quizService.removePlayerBySockedID(socket.id);
-
-            if ((socket as any).playerName) {
-                io.emit(`${ConnectionEvents.PlayerLeft}`, { playerName: (socket as any).playerName, playerId: socket.id });
+            if(this.roomService.removePlayerBySocketID(socket.id)){
+                
             }
+
+            // if ((socket as any).playerName) {
+            //     io.emit(`${ConnectionEvents.PlayerLeft}`, { playerName: (socket as any).playerName, playerId: socket.id });
+            // }
             // io.emit(`${ConnectionEvents.UpdatePlayers}`, quizService.getCurrentQuizState().players);
         });
     };

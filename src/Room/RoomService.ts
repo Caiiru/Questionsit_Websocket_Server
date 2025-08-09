@@ -1,3 +1,6 @@
+import { Client } from "socket.io/dist/client";
+import { io } from "../app";
+import { ConnectionEvents } from "../events/connectionEvents";
 import { Player, QuizClient } from "../Player/model/Client";
 import { StartQuizRequest } from "../Quiz/controller/requests/StartQuizRequest";
 import { QuestionResponse } from "../Quiz/controller/responses/QuestionResponse";
@@ -8,7 +11,8 @@ import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room, RoomState } from "./Room";
 
 export class RoomService {
-    Rooms: Array<Room> = [];
+    // Rooms: Array<Room> = [];
+    Rooms:Map<string,Room> = new Map<string,Room>();
 
     SENDER_NAME:string = "RoomService";
 
@@ -19,29 +23,30 @@ export class RoomService {
             console.error("Failure on create room: Host not identified");
             return null;
         }
+
         const newRoom: Room = new Room();
         newRoom.hostID = request.hostID;
-        newRoom.roomCode = this.GenerateRoomCode();
         newRoom.maxPlayers = request.maxPlayers;
         newRoom.roomID = String(Math.random() * 1223);
+ 
+        newRoom.roomCode = request.roomCode? request.roomCode : this.GenerateRoomCode();
 
         //GET ROOM FROM SERVER RESTFUL
         const _quiz = new QuizLoader().StartQuizLoader();
         if (_quiz != null) {
             newRoom.quiz = _quiz;
         }
-
-        console.log(`[RoomService]: Creating Room.. hostID: ${request.hostID} / Max Players: ${newRoom.maxPlayers}, RoomCode ${newRoom.roomCode}`);
-        console.log(`[RoomService]: Grasp: ${newRoom.quiz.graspName}`);
-        this.Rooms.push(newRoom);
+ 
+        this.Rooms.set(newRoom.roomCode,newRoom);
+        // this.Rooms.push(newRoom);
         return newRoom;
     }
 
     public GetRoomByCode(roomCode: string): Room | null {
-        const room = this.Rooms.find(r => r.roomCode == roomCode);
+        // const room = this.Rooms.find(r => r.roomCode == roomCode);
+        const room = this.Rooms.get(roomCode);
 
-        if (!room || room == undefined) return null;
-        console.log(`FIND ROOM WITH CODE: ${roomCode}`);
+        if (!room || room == undefined) return null; 
         return room;
 
     }
@@ -125,6 +130,36 @@ export class RoomService {
     IncreaseQuestionCounter(room: Room) {
         room.currentQuestion++;
     }
+    public removePlayerBySocketID(socketID: string): boolean { 
+        this.Rooms.forEach(room => { 
+            if(room.GetHost().socketId===socketID){
+                this.ClearRoom(room);
+                console.log(`Host with ID ${socketID} disconnected, clearing room.`);
+                return false;
+            }
+            const p:QuizClient | undefined = room.players.find(p => p.socketId === socketID);
+
+            if(!p) return false;
+
+            io.to(room.roomCode).emit(ConnectionEvents.PlayerLeft, p as QuizClient);
+
+            
+            console.log(`${p} disconnected, removing from room.`);
+            // Remove player and client from the room
+            room.clients = room.clients.filter(client => client.socketId !== socketID);
+            room.players = room.players.filter(player => player.socketId !== socketID);
+             
+            //break for each to stop after finding the first room with the 
+            // io.to(room.roomCode).emit(ConnectionEvents.UpdatePlayers, room.players); // Envia lista atualizada de jogadores
+
+            
+        }); 
+        return true;
+    }
+    public ClearRoom(room: Room): void {
+        io.to(room.roomCode).emit(ConnectionEvents.Disconnected, { message: "Host disconnected, room will be cleared." });
+        this.Rooms.delete(room.roomCode);
+    }
 
     public GenerateRoomCode(): string {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -139,6 +174,10 @@ export class RoomService {
         }
 
         return result;
+    }
+
+    GetPlayerAnswer(){
+        
     }
 
 }

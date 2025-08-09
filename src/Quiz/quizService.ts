@@ -1,6 +1,8 @@
 // src/services/quizService.ts
 
 class QuizService {
+
+    
    
     // private quizState: QuizState = {
     //     currentQuestion: null,

@@ -8,6 +8,9 @@ import { RoomService } from '../../Room/RoomService';
 import { RoomState } from '../../Room/Room';
 import { QuestionResponse } from './responses/QuestionResponse';
 import { logDebug } from '../../utils/logger';
+import { playerEvents } from '../../events/playerEvents';
+import { PlayerAnswerRequest } from './requests/PlayerAnswerRequest';
+import { quizService } from '../QuizService';
 
 const SENDER_NAME = "QuizController";
 export class QuizController {
@@ -34,4 +37,10 @@ export class QuizController {
  
         });
     } 
+    handlePlayerAnswer(socket:Socket){
+        socket.on(playerEvents.SUBMIT_ANSWER, (answer:PlayerAnswerRequest) => {
+
+            // quizService
+        });
+    }
 } 
