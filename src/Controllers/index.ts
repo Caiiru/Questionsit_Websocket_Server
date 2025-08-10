@@ -32,10 +32,8 @@ export class IndexController {
             // handlePlayerDisconnect(socket);
             // handleSubmitAnswer(socket);
             // handleQuizStart(socket); // Somente para admins ou um evento de início de quiz
-
-            this.playerController.handlePlayerJoin(socket);
-            this.playerController.handlePlayerHostGame(socket);
-            this.playerController.handlePlayerDisconnect(socket);
+ 
+            this.playerController.setHandlers(socket);
             this.quizController.handleStartQuiz(socket);
 
 

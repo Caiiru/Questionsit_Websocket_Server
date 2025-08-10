@@ -21,6 +21,12 @@ export class PlayerController {
     constructor(private roomService: RoomService) {
 
     }
+    public setHandlers(socket:Socket){
+        this.handlePlayerAnswer(socket);
+        this.handlePlayerJoin(socket);
+        this.handlePlayerHostGame(socket);
+        this.handlePlayerDisconnect(socket);
+    }
     public handlePlayerHostGame = (socket: Socket) => {
         socket.on(ConnectionEvents.HostGame, (data: HostRequest,) => {
 
@@ -87,11 +93,13 @@ export class PlayerController {
             logDebug(SENDER_NAME, `${newPlayer.name} joined room: ${room.roomCode}`);
         });
 
+
     };
 
     public handlePlayerAnswer = (socket:Socket) => {
         socket.on(playerEvents.SUBMIT_ANSWER, (data:PlayerAnswerRequest)=> {
-
+            console.log(data);
+            this.roomService.SetPlayerAnswer(data);
             
 
         });
@@ -103,7 +111,7 @@ export class PlayerController {
             
             // quizService.removePlayerBySockedID(socket.id);
             if(this.roomService.removePlayerBySocketID(socket.id)){
-                
+
             }
 
             // if ((socket as any).playerName) {

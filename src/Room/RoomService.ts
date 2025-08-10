@@ -9,12 +9,13 @@ import { logError } from "../utils/logger";
 import { QuizLoader } from "../utils/QuizLoader";
 import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room, RoomState } from "./Room";
+import { PlayerAnswerRequest } from "../Quiz/controller/requests/PlayerAnswerRequest";
 
 export class RoomService {
     // Rooms: Array<Room> = [];
-    Rooms:Map<string,Room> = new Map<string,Room>();
+    Rooms: Map<string, Room> = new Map<string, Room>();
 
-    SENDER_NAME:string = "RoomService";
+    SENDER_NAME: string = "RoomService";
 
     public CreateRoom(request: CreateRoomRequest): Room | null {
         //VALIDATE HOST ID
@@ -28,16 +29,16 @@ export class RoomService {
         newRoom.hostID = request.hostID;
         newRoom.maxPlayers = request.maxPlayers;
         newRoom.roomID = String(Math.random() * 1223);
- 
-        newRoom.roomCode = request.roomCode? request.roomCode : this.GenerateRoomCode();
+
+        newRoom.roomCode = request.roomCode ? request.roomCode : this.GenerateRoomCode();
 
         //GET ROOM FROM SERVER RESTFUL
         const _quiz = new QuizLoader().StartQuizLoader();
         if (_quiz != null) {
             newRoom.quiz = _quiz;
         }
- 
-        this.Rooms.set(newRoom.roomCode,newRoom);
+
+        this.Rooms.set(newRoom.roomCode, newRoom);
         // this.Rooms.push(newRoom);
         return newRoom;
     }
@@ -46,7 +47,7 @@ export class RoomService {
         // const room = this.Rooms.find(r => r.roomCode == roomCode);
         const room = this.Rooms.get(roomCode);
 
-        if (!room || room == undefined) return null; 
+        if (!room || room == undefined) return null;
         return room;
 
     }
@@ -130,35 +131,44 @@ export class RoomService {
     IncreaseQuestionCounter(room: Room) {
         room.currentQuestion++;
     }
-    public removePlayerBySocketID(socketID: string): boolean { 
-        this.Rooms.forEach(room => { 
-            if(room.GetHost().socketId===socketID){
+    public removePlayerBySocketID(socketID: string): boolean {
+        this.Rooms.forEach(room => {
+            if (room.GetHost().socketId === socketID) {
                 this.ClearRoom(room);
                 console.log(`Host with ID ${socketID} disconnected, clearing room.`);
                 return false;
             }
-            const p:QuizClient | undefined = room.players.find(p => p.socketId === socketID);
+            const p: QuizClient | undefined = room.players.find(p => p.socketId === socketID);
 
-            if(!p) return false;
+            if (!p) return false;
 
             io.to(room.roomCode).emit(ConnectionEvents.PlayerLeft, p as QuizClient);
 
-            
+
             console.log(`${p} disconnected, removing from room.`);
             // Remove player and client from the room
             room.clients = room.clients.filter(client => client.socketId !== socketID);
             room.players = room.players.filter(player => player.socketId !== socketID);
-             
+
+            return true;
             //break for each to stop after finding the first room with the 
             // io.to(room.roomCode).emit(ConnectionEvents.UpdatePlayers, room.players); // Envia lista atualizada de jogadores
 
-            
-        }); 
-        return true;
+
+        });
+        return false;
     }
     public ClearRoom(room: Room): void {
         io.to(room.roomCode).emit(ConnectionEvents.Disconnected, { message: "Host disconnected, room will be cleared." });
         this.Rooms.delete(room.roomCode);
+    }
+
+    public SetPlayerAnswer(data: PlayerAnswerRequest) {
+        const room = this.GetRoomByCode(data.roomCode);
+        if (!room) return false;
+
+        return room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion);
+
     }
 
     public GenerateRoomCode(): string {
@@ -176,8 +186,8 @@ export class RoomService {
         return result;
     }
 
-    GetPlayerAnswer(){
-        
+    GetPlayerAnswer() {
+
     }
 
 }
