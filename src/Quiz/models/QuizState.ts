@@ -9,3 +9,9 @@ export interface QuizState {
     roomCode: string,
     // ...
 }
+
+export interface QuestionState{ 
+    questionStartTime:number,
+    playersTime:Map<string,number>,
+    correctAnswer:number
+}

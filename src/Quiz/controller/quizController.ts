@@ -11,6 +11,7 @@ import { logDebug } from '../../utils/logger';
 import { playerEvents } from '../../events/playerEvents';
 import { PlayerAnswerRequest } from './requests/PlayerAnswerRequest';
 import { quizService } from '../QuizService';
+import { GameEvents } from '../../events/GameEvents';
 
 const SENDER_NAME = "QuizController";
 export class QuizController {
@@ -20,9 +21,12 @@ export class QuizController {
     constructor(roomService: RoomService) {
         this.roomService = roomService;
     }
-
+    setHandlers(socket:Socket){
+        this.handleStartQuiz(socket);
+        this.handlePlayerAnswer(socket);
+    }
     handleStartQuiz(socket: Socket) {
-        socket.on(hostEvents.Start_Quiz, (quizRequest: StartQuizRequest) => { 
+        socket.on(GameEvents.StartQuiz, (quizRequest: StartQuizRequest) => { 
 
             console.log("QuizController", `Quiz Start Received From: ${quizRequest.roomCode} by ${quizRequest.hostID}`);
 
@@ -33,14 +37,24 @@ export class QuizController {
             }
             
             // console.log(SENDER_NAME, `Starting Quiz... ${JSON.stringify(_questionResponse.question)}`);
-            io.to(quizRequest.roomCode).emit(hostEvents.Start_Quiz, _questionResponse as QuestionResponse);
+            io.to(quizRequest.roomCode).emit(GameEvents.NextQuestion, _questionResponse as QuestionResponse);
+            const timeoutID = 0;
+            setTimeout(()=>{
+                io.to(quizRequest.roomCode).emit(GameEvents.TimeEnded);
+                
+            },_questionResponse.question.time*1000)
+            
  
         });
     } 
     handlePlayerAnswer(socket:Socket){
         socket.on(playerEvents.SUBMIT_ANSWER, (answer:PlayerAnswerRequest) => {
-
-            // quizService
+            console.log(`Answer from: ${answer.playerID} in ${answer.roomCode}: ${answer.answer}`);
+            if(this.roomService.SetPlayerAnswer(answer)){
+                // all players already answered -> can skip timer
+                console.log("all players answer");
+                io.to(answer.roomCode).emit(GameEvents.AllPlayerAnswered); 
+            }
         });
     }
 } 

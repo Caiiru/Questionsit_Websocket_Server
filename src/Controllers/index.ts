@@ -34,7 +34,7 @@ export class IndexController {
             // handleQuizStart(socket); // Somente para admins ou um evento de início de quiz
  
             this.playerController.setHandlers(socket);
-            this.quizController.handleStartQuiz(socket);
+            this.quizController.setHandlers(socket);
 
 
             socket.emit(ConnectionEvents.Connecting, { message: "Connection Stablished" });

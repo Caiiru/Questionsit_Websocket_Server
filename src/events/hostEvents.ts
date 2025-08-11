@@ -1,4 +1,5 @@
 export const enum hostEvents{
-    Start_Quiz="START_QUIZ",
+    SendHostQuestion = 'HOST_SEND_QUESTION',
+    
     
 }

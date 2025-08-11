@@ -61,8 +61,8 @@ export class PlayerController {
             let room = this.roomService.GetRoomByCode(data.roomCode);
 
             if (!room) {
-                socket.emit(ConnectionEvents.RoomJoinFailure);
-                logError(SENDER_NAME, `Connection Failure: ${data.playerID}: ${data.username} - room: ${data.roomCode}`);
+                socket.emit(ConnectionEvents.RoomJoinFailure, { message: "Room not found" });
+                logError(SENDER_NAME, `Connection Failure: ${data.playerID}: ${data.username} - room: ${data.roomCode}`, `Room not found`);
                 return;
             }
 
@@ -87,8 +87,9 @@ export class PlayerController {
 
             }
 
-            io.to(data.roomCode).emit(`${ConnectionEvents.UpdatePlayers}`, playersList); // Envia lista atual de jogadores
+            io.to(data.roomCode).emit(`${ConnectionEvents.PlayerJoined}`, newPlayer); // Envia lista atual de jogadores
             socket.emit(`${ConnectionEvents.RoomJoinSuccess}`, connectionResponse as ConnectionResponse);
+            socket.emit(ConnectionEvents.UpdatePlayers, playersList);
 
             logDebug(SENDER_NAME, `${newPlayer.name} joined room: ${room.roomCode}`);
         });
@@ -97,8 +98,7 @@ export class PlayerController {
     };
 
     public handlePlayerAnswer = (socket:Socket) => {
-        socket.on(playerEvents.SUBMIT_ANSWER, (data:PlayerAnswerRequest)=> {
-            console.log(data);
+        socket.on(playerEvents.SUBMIT_ANSWER, (data:PlayerAnswerRequest)=> { 
             this.roomService.SetPlayerAnswer(data);
             
 

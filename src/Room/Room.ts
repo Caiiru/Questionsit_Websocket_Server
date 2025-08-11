@@ -1,5 +1,7 @@
 import { QuizClient, Host, Player } from "../Player/model/Client";
 import { Quiz } from "../Quiz/Grasp";
+import { Question } from "../Quiz/models/Question";
+import { QuestionState } from "../Quiz/models/QuizState";
 import { logInfo } from "../utils/logger";
 
 const SENDER_NAME = "Room";
@@ -15,6 +17,7 @@ export class Room {
     currentState: RoomState = RoomState.Lobby;
     currentQuestion: number = 0;
     PlayersAnswers: Map<string, string> = new Map<string, string>();
+    questionsStates:Array<QuestionState> = [];
 
 
 
@@ -42,12 +45,18 @@ export class Room {
 
     public GetClientByID(clientID: string): QuizClient {
         let quizClient = this.clients.filter(p => p.id === clientID)[0];
-        logInfo(SENDER_NAME, `${quizClient}`);
+        logInfo(SENDER_NAME, `${String(quizClient)}`);
         return quizClient;
     }
-    public SetPlayerAnswer(playerID: string, answer: string, question: number): boolean {
-        if (this.quiz.questions[question] == null) return false;
+    public SetPlayerAnswer(playerID: string, answer: string, questionIndex: number, answerTime:number): boolean {
+        if (this.quiz.questions[questionIndex] == null) return false;
 
+        this.questionsStates[questionIndex].playersTime.set(playerID,answerTime);
+
+        const currentQuestion = this.quiz.questions[questionIndex];
+        
+
+        
         //First Question
         if (this.PlayersAnswers.get(playerID) == null) { 
             this.PlayersAnswers.set(playerID, answer) 
@@ -65,6 +74,17 @@ export class Room {
         return this.GetClientByID(this.hostID) as Host;
     }
 
+    public GetCorrectQuestAnswer():number{
+        let loopIndex = 0;
+        this.quiz.questions[this.currentQuestion].answers.forEach(answer => {
+            if(answer.correct==1){
+                console.log(`Correct Answer ${loopIndex}: ${this.quiz.questions[this.currentQuestion].answers[loopIndex].text}`);
+                return loopIndex;
+            }
+            loopIndex++;
+        });
+        return -1;
+    }
 
 }
 

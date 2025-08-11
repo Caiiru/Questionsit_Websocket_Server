@@ -10,6 +10,7 @@ import { QuizLoader } from "../utils/QuizLoader";
 import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room, RoomState } from "./Room";
 import { PlayerAnswerRequest } from "../Quiz/controller/requests/PlayerAnswerRequest";
+import { QuestionState } from "../Quiz/models/QuizState";
 
 export class RoomService {
     // Rooms: Array<Room> = [];
@@ -81,6 +82,7 @@ export class RoomService {
 
         if (!_questionResponse || _questionResponse == null) return null;
 
+
         return _questionResponse;
     }
 
@@ -104,7 +106,9 @@ export class RoomService {
 
         const questionResponse: QuestionResponse = {
             question: _question,
+            serverStartTime: Date.now(),
         }
+
 
         return questionResponse;
     }
@@ -123,6 +127,13 @@ export class RoomService {
         const quizQuestions = room.quiz.questions;
 
         if (quizQuestions.length < n) return null;
+        
+        const questionState: QuestionState = {
+            questionStartTime: Date.now(),
+            playersTime: new Map<string, number>(),
+            correctAnswer: room.GetCorrectQuestAnswer()
+        }
+        room.questionsStates[n] = questionState;
 
         return room.quiz.questions[n];
 
@@ -166,8 +177,19 @@ export class RoomService {
     public SetPlayerAnswer(data: PlayerAnswerRequest) {
         const room = this.GetRoomByCode(data.roomCode);
         if (!room) return false;
+        room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion, data.answerTime);
+        
+        const currentAnswers = room.PlayersAnswers.size;
+        // console.log(`Current Answers: ${currentAnswers}`); 
 
-        return room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion);
+        if(currentAnswers == room.players.length){
+            return true;
+        }
+        return false;
+
+    }
+
+    public handlePoints(room: Room) {
 
     }
 
