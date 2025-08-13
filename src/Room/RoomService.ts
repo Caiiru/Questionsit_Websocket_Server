@@ -4,7 +4,7 @@ import { ConnectionEvents } from "../events/connectionEvents";
 import { Player, QuizClient } from "../Player/model/Client";
 import { StartQuizRequest } from "../Quiz/controller/requests/StartQuizRequest";
 import { QuestionResponse } from "../Quiz/controller/responses/QuestionResponse";
-import { Question } from "../Quiz/models/Question";
+import { Question, SendQuestion } from "../Quiz/models/Question";
 import { logError } from "../utils/logger";
 import { QuizLoader } from "../utils/QuizLoader";
 import { CreateRoomRequest } from "./requests/CreateRoomRequest";
@@ -104,8 +104,10 @@ export class RoomService {
         const _question: Question | null = this.GetQuestionByNumber(room, room.currentQuestion);
         if (_question == null) return null;
 
+        const _sendQuestion:SendQuestion = new SendQuestion(_question);
+        
         const questionResponse: QuestionResponse = {
-            question: _question,
+            question: _sendQuestion,
             serverStartTime: Date.now(),
         }
 
@@ -127,7 +129,7 @@ export class RoomService {
         const quizQuestions = room.quiz.questions;
 
         if (quizQuestions.length < n) return null;
-        
+
         const questionState: QuestionState = {
             questionStartTime: Date.now(),
             playersTime: new Map<string, number>(),
@@ -174,23 +176,55 @@ export class RoomService {
         this.Rooms.delete(room.roomCode);
     }
 
-    public SetPlayerAnswer(data: PlayerAnswerRequest) {
+    public SetPlayerAnswer(data: PlayerAnswerRequest):boolean {
         const room = this.GetRoomByCode(data.roomCode);
         if (!room) return false;
         room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion, data.answerTime);
-        
+
         const currentAnswers = room.PlayersAnswers.size;
         // console.log(`Current Answers: ${currentAnswers}`); 
+        const canFinish = currentAnswers == room.players.length;
 
-        if(currentAnswers == room.players.length){
-            return true;
-        }
-        return false;
+
+        return canFinish;
 
     }
 
-    public handlePoints(room: Room) {
+    public async handlePoints(room: Room) {
+        const currentQuestionState = room.questionsStates[room.currentQuestion];
+        const currentAnswer: number = currentQuestionState.correctAnswer;
+        const questionStartTime: number = currentQuestionState.questionStartTime;
 
+        const difficultyPoints = 100;
+        const timeBonus = 2;
+
+        room.players.forEach(player => {
+            let addPlayerPoints = 0;
+
+            const playerAnswer = room.PlayersAnswers.get(player.id)?.charAt(room.currentQuestion);
+            //Check if answer is correct
+            const isCorrect = playerAnswer == String(currentAnswer) ? true : false;
+
+            addPlayerPoints += isCorrect ? difficultyPoints : difficultyPoints * 0.2;
+
+            //Check player time
+            let playerTime = currentQuestionState.playersTime.get(player.id);
+            if (playerTime == undefined) {
+                //Set player time to max possible
+                // O usuário, quando o bonus de tempo estiver ativo, vai ganhar, pelo menos, 
+                // 1s de bonus pelo tempo, pois terá respondido no último segundo. Só ganha se resposta for correta.
+
+                playerTime = currentQuestionState.questionStartTime + ((room.quiz.questions[room.currentQuestion].time - 1) * 1000);
+            }
+
+            const playerAnswerTime = ((playerTime - questionStartTime) / 1000) * timeBonus;
+            if (isCorrect)
+                addPlayerPoints += playerAnswerTime;
+
+            player.score += addPlayerPoints;
+
+
+        }) 
     }
 
     public GenerateRoomCode(): string {

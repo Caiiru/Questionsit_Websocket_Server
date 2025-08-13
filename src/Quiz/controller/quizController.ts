@@ -12,6 +12,7 @@ import { playerEvents } from '../../events/playerEvents';
 import { PlayerAnswerRequest } from './requests/PlayerAnswerRequest';
 import { quizService } from '../QuizService';
 import { GameEvents } from '../../events/GameEvents';
+import { PlayersScoreResponse } from './responses/PlayersScoreResponse';
 
 const SENDER_NAME = "QuizController";
 export class QuizController {
@@ -37,8 +38,7 @@ export class QuizController {
             }
             
             // console.log(SENDER_NAME, `Starting Quiz... ${JSON.stringify(_questionResponse.question)}`);
-            io.to(quizRequest.roomCode).emit(GameEvents.NextQuestion, _questionResponse as QuestionResponse);
-            const timeoutID = 0;
+            io.to(quizRequest.roomCode).emit(GameEvents.NextQuestion, _questionResponse as QuestionResponse); 
             setTimeout(()=>{
                 io.to(quizRequest.roomCode).emit(GameEvents.TimeEnded);
                 
@@ -48,12 +48,14 @@ export class QuizController {
         });
     } 
     handlePlayerAnswer(socket:Socket){
-        socket.on(playerEvents.SUBMIT_ANSWER, (answer:PlayerAnswerRequest) => {
+        socket.on(playerEvents.SUBMIT_ANSWER, async (answer:PlayerAnswerRequest) => {
             console.log(`Answer from: ${answer.playerID} in ${answer.roomCode}: ${answer.answer}`);
-            if(this.roomService.SetPlayerAnswer(answer)){
-                // all players already answered -> can skip timer
-                console.log("all players answer");
+            const canFinish = this.roomService.SetPlayerAnswer(answer);
+            if(canFinish){
                 io.to(answer.roomCode).emit(GameEvents.AllPlayerAnswered); 
+                // const getPlayersPoints:PlayersScoreResponse = { 
+                // }
+                //LEMBRAR DEPOIS DE FINALIZAR ISSO 
             }
         });
     }

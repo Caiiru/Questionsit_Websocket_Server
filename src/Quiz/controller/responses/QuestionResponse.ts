@@ -1,6 +1,6 @@
-import { Answer, Question } from "../../models/Question";
+import { Answer, Question, SendQuestion } from "../../models/Question";
 
 export interface QuestionResponse{
-    question:Question
+    question:SendQuestion
     serverStartTime: number
 }
