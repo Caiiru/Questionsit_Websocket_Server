@@ -11,8 +11,7 @@ export class QuizLoader {
         const jsonToLoad = require('../utils/questions.json');
 
         const _quiz = this.GetQuizFromJson(jsonToLoad.Grasp);
-        if (_quiz == undefined) {
-            console.log("undefined :(");
+        if (_quiz == undefined) { 
             return null;
         }
         this.quizLoaded = _quiz;
@@ -45,11 +44,7 @@ export class QuizLoader {
 
             }
             newGrasp.questions.push(question);
-        }
-        // newGrasp.questions = quizData.questions; 
- 
-
-        // console.log(this.GetStringFromQuiz(newGrasp));
+        } 
 
         return newGrasp;
     }

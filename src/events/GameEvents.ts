@@ -9,4 +9,6 @@ export enum GameEvents{
     TimeEnded = "TIME_ENDED", //Termina o tempo do Quiz
     AllPlayerAnswered = "PLAYERS_ANSWERED",
     
+    SendScores = "SCORES_RECEIVED",
+    
 }

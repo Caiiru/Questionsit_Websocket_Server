@@ -12,6 +12,7 @@ import { Host, Player } from '../model/Client';
 import { playerEvents } from '../../events/playerEvents';
 import { PlayerAnswerRequest } from '../../Quiz/controller/requests/PlayerAnswerRequest';
 import { quizService } from '../../Quiz/QuizService';
+import { Room } from '../../Room/Room';
 
 const SENDER_NAME = "PlayerController";
 
@@ -21,8 +22,7 @@ export class PlayerController {
     constructor(private roomService: RoomService) {
 
     }
-    public setHandlers(socket:Socket){
-        this.handlePlayerAnswer(socket);
+    public setHandlers(socket:Socket){ 
         this.handlePlayerJoin(socket);
         this.handlePlayerHostGame(socket);
         this.handlePlayerDisconnect(socket);
@@ -74,6 +74,8 @@ export class PlayerController {
                 cards: '0,0'
             };
             room.AddPlayer(newPlayer);
+
+            console.log(`Player Add: ${JSON.stringify(newPlayer)}`);
             socket.join(data.roomCode);
 
             (socket as any).playerName = data.username; // Atribuição para uso em disconnect
@@ -96,15 +98,7 @@ export class PlayerController {
 
 
     };
-
-    public handlePlayerAnswer = (socket:Socket) => {
-        socket.on(playerEvents.SUBMIT_ANSWER, (data:PlayerAnswerRequest)=> { 
-            this.roomService.SetPlayerAnswer(data);
-            
-
-        });
-    }
-
+ 
     public handlePlayerDisconnect = (socket: Socket) => {
         socket.on('disconnect', () => {
             console.log(`Um usuário desconectado: ${socket.id}`);

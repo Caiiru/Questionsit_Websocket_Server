@@ -48,24 +48,26 @@ export class Room {
         logInfo(SENDER_NAME, `${String(quizClient)}`);
         return quizClient;
     }
-    public SetPlayerAnswer(playerID: string, answer: string, questionIndex: number, answerTime:number): boolean {
+    public SetPlayerAnswer(playerID: string, answer: string, questionIndex: number, answerTime:number) {
         if (this.quiz.questions[questionIndex] == null) return false;
 
         this.questionsStates[questionIndex].playersTime.set(playerID,answerTime);
 
         const currentQuestion = this.quiz.questions[questionIndex];
         
-
+        
         
         //First Question
         if (this.PlayersAnswers.get(playerID) == null) { 
-            this.PlayersAnswers.set(playerID, answer) 
-            return true;
+            
+            this.PlayersAnswers.set(playerID, answer)  
+            console.log(this.PlayersAnswers.entries()); 
+            return;
         };
+        console.log("+ Option");
         const _answer = this.GetPlayerAnswer(playerID);
 
         this.PlayersAnswers.set(playerID, _answer + answer);
-        return true;
     }
     public GetPlayerAnswer(playerID: string): string | null {
         return this.PlayersAnswers.get(playerID) || null;
@@ -75,15 +77,19 @@ export class Room {
     }
 
     public GetCorrectQuestAnswer():number{
-        let loopIndex = 0;
-        this.quiz.questions[this.currentQuestion].answers.forEach(answer => {
+        let loopIndex:number = 0;
+        const answers = this.quiz.questions[this.currentQuestion].answers;  
+
+        let correctAnswer = 0;
+
+        answers.forEach(answer => {
             if(answer.correct==1){
-                console.log(`Correct Answer ${loopIndex}: ${this.quiz.questions[this.currentQuestion].answers[loopIndex].text}`);
-                return loopIndex;
+                correctAnswer= loopIndex;
+                
             }
             loopIndex++;
         });
-        return -1;
+        return correctAnswer;
     }
 
 }

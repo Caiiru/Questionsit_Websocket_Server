@@ -11,6 +11,7 @@ import { CreateRoomRequest } from "./requests/CreateRoomRequest";
 import { Room, RoomState } from "./Room";
 import { PlayerAnswerRequest } from "../Quiz/controller/requests/PlayerAnswerRequest";
 import { QuestionState } from "../Quiz/models/QuizState";
+import { PlayerScore, PlayersScoreResponse } from "../Quiz/controller/responses/PlayersScoreResponse";
 
 export class RoomService {
     // Rooms: Array<Room> = [];
@@ -130,11 +131,14 @@ export class RoomService {
 
         if (quizQuestions.length < n) return null;
 
+        const _correctAnswer = room.GetCorrectQuestAnswer(); 
         const questionState: QuestionState = {
             questionStartTime: Date.now(),
             playersTime: new Map<string, number>(),
-            correctAnswer: room.GetCorrectQuestAnswer()
+            correctAnswer: _correctAnswer
         }
+
+        console.log(`new question state: ${JSON.stringify(questionState)}`);
         room.questionsStates[n] = questionState;
 
         return room.quiz.questions[n];
@@ -157,8 +161,7 @@ export class RoomService {
 
             io.to(room.roomCode).emit(ConnectionEvents.PlayerLeft, p as QuizClient);
 
-
-            console.log(`${p} disconnected, removing from room.`);
+ 
             // Remove player and client from the room
             room.clients = room.clients.filter(client => client.socketId !== socketID);
             room.players = room.players.filter(player => player.socketId !== socketID);
@@ -176,13 +179,25 @@ export class RoomService {
         this.Rooms.delete(room.roomCode);
     }
 
-    public SetPlayerAnswer(data: PlayerAnswerRequest):boolean {
-        const room = this.GetRoomByCode(data.roomCode);
-        if (!room) return false;
-        room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion, data.answerTime);
+    public SetPlayerAnswer(data: PlayerAnswerRequest, room:Room):boolean { 
+        // if(!room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion, data.answerTime)){
+        //     console.error("Answer Error");
+        // }
+        
+        let state = room.questionsStates[room.currentQuestion];
+        
+        state.playersTime.set(data.playerID, data.answerTime);
+        
+        if(!room.PlayersAnswers.get(data.playerID)){
+            //player has no answer
+            console.log("[RoomService]:Player has no answer");
+            room.PlayersAnswers.set(data.playerID,String(data.answer));
 
-        const currentAnswers = room.PlayersAnswers.size;
-        // console.log(`Current Answers: ${currentAnswers}`); 
+        }
+
+        // console.log(`Answers: ${JSON.stringify(Object.fromEntries(room.PlayersAnswers.entries()))}`);
+        console.log(room.PlayersAnswers);
+        const currentAnswers = room.PlayersAnswers.size; 
         const canFinish = currentAnswers == room.players.length;
 
 
@@ -190,7 +205,8 @@ export class RoomService {
 
     }
 
-    public async handlePoints(room: Room) {
+    public handlePoints(room: Room):PlayersScoreResponse { 
+
         const currentQuestionState = room.questionsStates[room.currentQuestion];
         const currentAnswer: number = currentQuestionState.correctAnswer;
         const questionStartTime: number = currentQuestionState.questionStartTime;
@@ -198,14 +214,30 @@ export class RoomService {
         const difficultyPoints = 100;
         const timeBonus = 2;
 
-        room.players.forEach(player => {
-            let addPlayerPoints = 0;
+        let response:PlayersScoreResponse = {scores: new Array}
 
-            const playerAnswer = room.PlayersAnswers.get(player.id)?.charAt(room.currentQuestion);
-            //Check if answer is correct
-            const isCorrect = playerAnswer == String(currentAnswer) ? true : false;
+        const _allAnswers = room.PlayersAnswers;
 
-            addPlayerPoints += isCorrect ? difficultyPoints : difficultyPoints * 0.2;
+        // console.log("Room: " + JSON.stringify(room));
+        
+        // console.log("Player Answer: " + room.PlayersAnswers.get(room.players[0].id));
+        room.players.forEach(player => { 
+            let totalPointsEarned = 0;
+            
+
+            const playerAnswer = _allAnswers.get(player.id); 
+            console.log(JSON.stringify(Object.fromEntries(_allAnswers.entries())));
+            console.log(`Player: ${player.name} answered: ${playerAnswer}`);
+
+
+            const isCorrect = Number(playerAnswer) == Number(currentAnswer) ? true : false;
+
+            // console.log(`Player answer: ${playerAnswer}, correct: ${currentAnswer}`);
+            // console.log("MAP:  "+ JSON.stringify(room.PlayersAnswers.entries()));
+
+ 
+
+            totalPointsEarned += isCorrect ? difficultyPoints : difficultyPoints * 0.2;
 
             //Check player time
             let playerTime = currentQuestionState.playersTime.get(player.id);
@@ -219,12 +251,22 @@ export class RoomService {
 
             const playerAnswerTime = ((playerTime - questionStartTime) / 1000) * timeBonus;
             if (isCorrect)
-                addPlayerPoints += playerAnswerTime;
+                totalPointsEarned += playerAnswerTime;
 
-            player.score += addPlayerPoints;
+            
+            let playerScore:PlayerScore = {
+                playerID:player.id,
+                isAnswerCorrect:isCorrect,
+                scoreBeforeUpdated:player.score,
+                pointsEarned:totalPointsEarned
+            };
 
+            player.score += totalPointsEarned;
 
+            response.scores.push(playerScore);
         }) 
+
+        return response;
     }
 
     public GenerateRoomCode(): string {
