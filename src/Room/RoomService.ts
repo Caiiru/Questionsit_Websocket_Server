@@ -82,7 +82,7 @@ export class RoomService {
         const _questionResponse: QuestionResponse | null = this.GetCurrentRoomQuestion(_room);
 
         if (!_questionResponse || _questionResponse == null) return null;
-
+ 
 
         return _questionResponse;
     }
@@ -93,20 +93,14 @@ export class RoomService {
 
         return true;
     }
-    public GetCurrentRoomQuestionByRoomCode(roomCode: string): QuestionResponse | null {
-        var room = this.GetRoomByCode(roomCode);
-        if (!room) return null;
 
-        return this.GetCurrentRoomQuestion(room);
-
-    }
     private GetCurrentRoomQuestion(room: Room): QuestionResponse | null {
 
         const _question: Question | null = this.GetQuestionByNumber(room, room.currentQuestion);
         if (_question == null) return null;
 
-        const _sendQuestion:SendQuestion = new SendQuestion(_question);
-        
+        const _sendQuestion: SendQuestion = new SendQuestion(_question);
+
         const questionResponse: QuestionResponse = {
             question: _sendQuestion,
             serverStartTime: Date.now(),
@@ -115,6 +109,15 @@ export class RoomService {
 
         return questionResponse;
     }
+
+    public GetCurrentRoomQuestionByRoomCode(roomCode: string): QuestionResponse | null {
+        var room = this.GetRoomByCode(roomCode);
+        if (!room) return null;
+
+        return this.GetCurrentRoomQuestion(room);
+
+    }
+
 
     public GetNextRoomQuestion(roomCode: string): QuestionResponse | null {
         var room = this.GetRoomByCode(roomCode);
@@ -131,11 +134,13 @@ export class RoomService {
 
         if (quizQuestions.length < n) return null;
 
-        const _correctAnswer = room.GetCorrectQuestAnswer(); 
+        const _correctAnswer = room.GetCorrectQuestAnswer();
+        
         const questionState: QuestionState = {
             questionStartTime: Date.now(),
             playersTime: new Map<string, number>(),
-            correctAnswer: _correctAnswer
+            correctAnswer: _correctAnswer,
+            playersAnswered:0,
         }
 
         console.log(`new question state: ${JSON.stringify(questionState)}`);
@@ -161,7 +166,7 @@ export class RoomService {
 
             io.to(room.roomCode).emit(ConnectionEvents.PlayerLeft, p as QuizClient);
 
- 
+
             // Remove player and client from the room
             room.clients = room.clients.filter(client => client.socketId !== socketID);
             room.players = room.players.filter(player => player.socketId !== socketID);
@@ -179,25 +184,26 @@ export class RoomService {
         this.Rooms.delete(room.roomCode);
     }
 
-    public SetPlayerAnswer(data: PlayerAnswerRequest, room:Room):boolean { 
+    public SetPlayerAnswer(data: PlayerAnswerRequest, room: Room): boolean {
         // if(!room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion, data.answerTime)){
         //     console.error("Answer Error");
         // }
-        
+
         let state = room.questionsStates[room.currentQuestion];
-        
+
         state.playersTime.set(data.playerID, data.answerTime);
-        
-        if(!room.PlayersAnswers.get(data.playerID)){
-            //player has no answer
-            console.log("[RoomService]:Player has no answer");
-            room.PlayersAnswers.set(data.playerID,String(data.answer));
 
-        }
+        let _previousAnswer:string|undefined = room.PlayersAnswers.get(data.playerID);
+        if(_previousAnswer== undefined)
+            _previousAnswer='';
 
-        // console.log(`Answers: ${JSON.stringify(Object.fromEntries(room.PlayersAnswers.entries()))}`);
-        console.log(room.PlayersAnswers);
-        const currentAnswers = room.PlayersAnswers.size; 
+
+        room.PlayersAnswers.set(data.playerID, _previousAnswer + String(data.answer));
+        room.questionsStates[room.currentQuestion].playersAnswered++;
+
+        console.log(`player ${data.playerID} time: ${data.answerTime}, total answer: ${room.PlayersAnswers.get(data.playerID)}`);
+ 
+        const currentAnswers = room.questionsStates[room.currentQuestion].playersAnswered;
         const canFinish = currentAnswers == room.players.length;
 
 
@@ -205,7 +211,7 @@ export class RoomService {
 
     }
 
-    public handlePoints(room: Room):PlayersScoreResponse { 
+    public handlePoints(room: Room): PlayersScoreResponse {
 
         const currentQuestionState = room.questionsStates[room.currentQuestion];
         const currentAnswer: number = currentQuestionState.correctAnswer;
@@ -214,28 +220,23 @@ export class RoomService {
         const difficultyPoints = 100;
         const timeBonus = 2;
 
-        let response:PlayersScoreResponse = {scores: new Array}
+        let response: PlayersScoreResponse = { scores: new Array }
 
         const _allAnswers = room.PlayersAnswers;
-
-        // console.log("Room: " + JSON.stringify(room));
-        
-        // console.log("Player Answer: " + room.PlayersAnswers.get(room.players[0].id));
-        room.players.forEach(player => { 
+ 
+        room.players.forEach(player => {
             let totalPointsEarned = 0;
-            
 
-            const playerAnswer = _allAnswers.get(player.id); 
-            console.log(JSON.stringify(Object.fromEntries(_allAnswers.entries())));
+
+            const playerAnswer = _allAnswers.get(player.id)?.charAt(room.currentQuestion); 
+            
             console.log(`Player: ${player.name} answered: ${playerAnswer}`);
 
 
             const isCorrect = Number(playerAnswer) == Number(currentAnswer) ? true : false;
-
-            // console.log(`Player answer: ${playerAnswer}, correct: ${currentAnswer}`);
-            // console.log("MAP:  "+ JSON.stringify(room.PlayersAnswers.entries()));
-
  
+
+
 
             totalPointsEarned += isCorrect ? difficultyPoints : difficultyPoints * 0.2;
 
@@ -253,18 +254,18 @@ export class RoomService {
             if (isCorrect)
                 totalPointsEarned += playerAnswerTime;
 
-            
-            let playerScore:PlayerScore = {
-                playerID:player.id,
-                isAnswerCorrect:isCorrect,
-                scoreBeforeUpdated:player.score,
-                pointsEarned:totalPointsEarned
+
+            let playerScore: PlayerScore = {
+                playerID: player.id,
+                isAnswerCorrect: isCorrect,
+                scoreBeforeUpdated: player.score,
+                pointsEarned: totalPointsEarned
             };
 
             player.score += totalPointsEarned;
 
             response.scores.push(playerScore);
-        }) 
+        })
 
         return response;
     }

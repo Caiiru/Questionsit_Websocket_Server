@@ -13,5 +13,6 @@ export interface QuizState {
 export interface QuestionState{ 
     questionStartTime:number,
     playersTime:Map<string,number>,
-    correctAnswer:number
+    correctAnswer:number,
+    playersAnswered:number
 }

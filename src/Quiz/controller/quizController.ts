@@ -48,7 +48,7 @@ export class QuizController {
 
     }
     handlePlayerAnswer(socket: Socket) {
-        socket.on(playerEvents.SUBMIT_ANSWER, async (answer: PlayerAnswerRequest) => { 
+        socket.on(playerEvents.SUBMIT_ANSWER, (answer: PlayerAnswerRequest) => { 
 
             const room = this.roomService.GetRoomByCode(answer.roomCode);
 
