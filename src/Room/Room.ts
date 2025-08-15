@@ -1,6 +1,6 @@
 import { QuizClient, Host, Player } from "../Player/model/Client";
 import { Quiz } from "../Quiz/Grasp";
-import { Question } from "../Quiz/models/Question";
+import { Answer, Question } from "../Quiz/models/Question";
 import { QuestionState } from "../Quiz/models/QuizState";
 import { logInfo } from "../utils/logger";
 
@@ -63,8 +63,7 @@ export class Room {
             this.PlayersAnswers.set(playerID, answer)  
             console.log(this.PlayersAnswers.entries()); 
             return;
-        };
-        console.log("+ Option");
+        }; 
         const _answer = this.GetPlayerAnswer(playerID);
 
         this.PlayersAnswers.set(playerID, _answer + answer);
@@ -78,8 +77,10 @@ export class Room {
 
     public GetCorrectQuestAnswer():number{
         let loopIndex:number = 0;
-        const answers = this.quiz.questions[this.currentQuestion].answers;  
-
+        const answers:Answer[] | null = this.quiz.questions[this.currentQuestion].answers;  
+        if(!answers){
+            console.error(`Answers for ${this.quiz.questions[this.currentQuestion].headerText} is null`);
+        }
         let correctAnswer = 0;
 
         answers.forEach(answer => {

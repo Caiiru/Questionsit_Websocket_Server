@@ -24,10 +24,10 @@ export class QuizController {
         this.roomService = roomService;
     }
     setHandlers(socket: Socket) {
-        this.handleStartQuiz(socket);
+        this.handleQuizEvents(socket);
         this.handlePlayerAnswer(socket);
     }
-    handleStartQuiz(socket: Socket) {
+    handleQuizEvents(socket: Socket) {
         socket.on(GameEvents.StartQuiz, (quizRequest: StartQuizRequest) => {
  
 
@@ -45,6 +45,7 @@ export class QuizController {
 
 
         });
+
     }
     handlePlayerAnswer(socket: Socket) {
         socket.on(playerEvents.SUBMIT_ANSWER, async (answer: PlayerAnswerRequest) => { 
@@ -64,10 +65,19 @@ export class QuizController {
 
                 io.to(room.roomCode).emit(GameEvents.SendScores, scoreResponse);
                 console.log(scoreResponse);
+                
+                setTimeout(() => { 
 
-                // const getPlayersPoints:PlayersScoreResponse = { 
-                // }
-                //LEMBRAR DEPOIS DE FINALIZAR ISSO 
+                    const hasNextQuestion = room.quiz.questions.length > room.currentQuestion+1;
+
+                    if(!hasNextQuestion){
+                        console.log("QUIZ END MOTHERFUCKER");
+                        return;
+                    }
+
+                    const _nextQuestion:QuestionResponse | null = this.roomService.GetNextRoomQuestion(room.roomCode); 
+                    io.to(room.roomCode).emit(GameEvents.NextQuestion, _nextQuestion as QuestionResponse);
+                }, 10000);
             }
         });
     }
