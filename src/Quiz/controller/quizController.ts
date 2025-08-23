@@ -17,12 +17,14 @@ import { json } from 'stream/consumers';
 import { AddCardToRoomResponse, DevEvents } from '../../utils/devEvents';
 import { CardEvents, CardUsedByPlayerPayload } from '../../Cards/CardEvents';
 import { CardService } from '../../Cards/CardService';
+import { resolve } from 'path';
 
 const SENDER_NAME = "QuizController";
 export class QuizController {
     roomService: RoomService = new RoomService();
-    cardService:CardService | undefined;
+    cardService: CardService | undefined;
 
+    roomTimers = new Map();
 
     constructor(roomService: RoomService) {
         this.roomService = roomService;
@@ -30,12 +32,18 @@ export class QuizController {
 
         this.cardService = new CardService(roomService);
     }
+
+
     setHandlers(socket: Socket) {
         this.handleQuizEvents(socket);
         this.handlePlayerAnswer(socket);
         this.handleUsedCards(socket);
     }
     handleQuizEvents(socket: Socket) {
+
+        if(!this.cardService)
+            return;
+
         socket.on(GameEvents.StartQuiz, (quizRequest: StartQuizRequest) => {
 
 
@@ -44,26 +52,34 @@ export class QuizController {
             if (!_questionResponse || _questionResponse == null) {
                 throw new Error("Not Implemented");
             }
-            const response: AddCardToRoomResponse | null = this.roomService.AddCardsFromQuizStart(quizRequest.roomCode);
+            const response: AddCardToRoomResponse | null = this.cardService!.AddCardsFromQuizStart(quizRequest.roomCode);
+ 
 
-            // console.log(response?.playerIDtoCardID);
+            const handleRoundEnd = async () => {
 
+                const room = this.roomService.GetRoomOrNullByCode(quizRequest.roomCode);
+                if(!room) return;
+
+                await this.emitScores(room).catch(()=> {
+                    console.log("Error on handle round end ");
+                });
+
+            };
 
             io.to(quizRequest.roomCode).emit(GameEvents.NextQuestion, _questionResponse as QuestionResponse);
-            setTimeout(() => {
+            const timeoutID = setTimeout(async () => {
                 io.to(quizRequest.roomCode).emit(GameEvents.TimeEnded);
 
                 const room = this.roomService.GetRoomOrNullByCode(quizRequest.roomCode);
-                if(room==null) return;
+                if (room == null) return;
+ 
+                await handleRoundEnd();
 
-                const scoreResponse:PlayersScoreResponse = this.roomService.handlePoints(room);
-                io.to(room.roomCode).emit(GameEvents.SendScores, scoreResponse);
-                
 
             }, _questionResponse.question.time * 1000);
 
-            if (response == null) {
-                // console.error("Response incorrect");
+            this.roomTimers.set(quizRequest.roomCode, timeoutID);
+            if (response == null) { 
             }
             else {
                 io.to(quizRequest.roomCode).emit(CardEvents.SendRandomCard, response as AddCardToRoomResponse);
@@ -73,8 +89,7 @@ export class QuizController {
 
         socket.on(GameEvents.NextQuestion, (roomCode: string) => {
             const room: Room | null = this.roomService.GetRoomOrNullByCode(roomCode);
-            if (!room) {
-                console.error("Room doesnt exist");
+            if (!room) { 
                 return;
             }
             const hasNextQuestion = room.quiz.questions.length > room.currentQuestion + 1;
@@ -90,46 +105,47 @@ export class QuizController {
         })
 
     }
+    
     handlePlayerAnswer(socket: Socket) {
-        socket.on(playerEvents.SUBMIT_ANSWER, (answer: PlayerAnswerRequest) => {
+        socket.on(playerEvents.SUBMIT_ANSWER, async (answer: PlayerAnswerRequest) => {
 
             const room = this.roomService.GetRoomOrNullByCode(answer.roomCode);
 
             if (!room) {
                 return;
-            }
-            // console.log("Received Answer: " + answer.playerID);
+            } 
 
             const canFinish = this.roomService.SetPlayerAnswer(answer, room);
             if (canFinish) {
                 io.to(answer.roomCode).emit(GameEvents.AllPlayerAnswered);
 
-                const scoreResponse: PlayersScoreResponse = this.roomService.handlePoints(room);
-
-                io.to(room.roomCode).emit(GameEvents.SendScores, scoreResponse);
-                // console.log(scoreResponse);
-
-                // setTimeout(() => {
-
-                //     const hasNextQuestion = room.quiz.questions.length > room.currentQuestion + 1;
-
-                //     if (!hasNextQuestion) {
-                //         return;
-                //     }
-
-                //     const _nextQuestion: QuestionResponse | null = this.roomService.GetNextRoomQuestion(room.roomCode);
-                //     io.to(room.roomCode).emit(GameEvents.NextQuestion, _nextQuestion as QuestionResponse);
-                // }, 10000);
+                await this.emitScores(room).catch(()=>{
+                    console.log("Error on handle Player Answer ")
+                }); 
             }
         });
     }
-    handleUsedCards(socket: Socket) 
-    {
-        socket.on(CardEvents.PlayerUsedCard, async (data:CardUsedByPlayerPayload)=>{ 
+    handleUsedCards(socket: Socket) {
+        socket.on(CardEvents.PlayerUsedCard, async (data: CardUsedByPlayerPayload) => {
 
-            this.cardService?.useCard(data).then(()=>{
-                console.log(`[HANDLECARDS] Player ${data.playerID} used ${data.cardID} on room ${data.roomCode}`);
-            })
+            this.cardService?.useCard(data);
         })
+    }
+
+    async emitScores(room: Room) {
+        return new Promise<void>((resolve) => {
+            const scoreResponse = this.roomService.handlePoints(room);
+
+            console.log(`[EmitScores] ${JSON.stringify(scoreResponse)}`);
+
+
+            io.to(room.roomCode).emit(GameEvents.SendScores, scoreResponse);
+            const timerID = this.roomTimers.get(room.roomCode);
+            if(timerID){
+                clearTimeout(timerID);
+                this.roomTimers.delete(room.roomCode);
+            }
+            resolve();
+        });
     }
 } 

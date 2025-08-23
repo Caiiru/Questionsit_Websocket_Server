@@ -1,7 +1,7 @@
 import { Room } from "../Room/Room";
+import { CardConcrete } from "./CardConcrete";
 
-export interface CardEffectStrategy{  
-    targetID?:string,
-    execute(playerID:string, room:Room, targetID?:string):Promise<any>;
-    
+export interface CardEffectStrategy extends CardConcrete{  
+    execute():void;
+    save(playerID:string,room:Room,targetID?:string):void;
 }

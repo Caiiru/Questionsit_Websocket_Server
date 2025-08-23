@@ -33,22 +33,13 @@ export class RoomService {
     public InitializeRoomService() {
 
 
-        //INITIALIZE CARDS
-        const cardLoader = new CardsLoader();
-        const _cards: Card[] | null = cardLoader.StartCardLoader();
-        if (_cards == null) {
-            console.error("Cards not initialized correctly");
-            return null;
-        }
-        this.Cards = _cards;
 
     }
 
     public CreateRoom(request: CreateRoomRequest): Room | null {
         //VALIDATE HOST ID
 
-        if (request.hostID == 'null' || !request.hostID) {
-            console.error("Failure on create room: Host not identified");
+        if (request.hostID == 'null' || !request.hostID) { 
             return null;
         }
 
@@ -170,9 +161,7 @@ export class RoomService {
             cardsUsedByPlayer: new Map<string, string>(),
             cardsStack: new Array<CardEffectStrategy>(),
 
-        }
-
-        // console.log(`new question state: ${JSON.stringify(questionState)}`);
+        }  
         room.questionsStates[n] = questionState;
 
         return room.quiz.questions[n];
@@ -185,8 +174,7 @@ export class RoomService {
     public removePlayerBySocketID(socketID: string): boolean {
         this.Rooms.forEach(room => {
             if (room.GetHost().socketId === socketID) {
-                this.ClearRoom(room);
-                console.log(`Host with ID ${socketID} disconnected, clearing room.`);
+                this.ClearRoom(room); 
                 return false;
             }
             const p: QuizClient | undefined = room.players.find(p => p.socketId === socketID);
@@ -213,11 +201,7 @@ export class RoomService {
         this.Rooms.delete(room.roomCode);
     }
 
-    public SetPlayerAnswer(data: PlayerAnswerRequest, room: Room): boolean {
-        // if(!room.SetPlayerAnswer(data.playerID, String(data.answer), room.currentQuestion, data.answerTime)){
-        //     console.error("Answer Error");
-        // }
-
+    public SetPlayerAnswer(data: PlayerAnswerRequest, room: Room): boolean { 
         let state = room.questionsStates[room.currentQuestion];
 
         state.playersTime.set(data.playerID, data.answerTime);
@@ -229,8 +213,7 @@ export class RoomService {
 
         room.PlayersAnswers.set(data.playerID, _previousAnswer + String(data.answer));
         room.questionsStates[room.currentQuestion].playersAnswered++;
-
-        console.log(`player ${data.playerID} time: ${data.answerTime}, total answer: ${room.PlayersAnswers.get(data.playerID)}`);
+ 
 
         const currentAnswers = room.questionsStates[room.currentQuestion].playersAnswered;
         const canFinish = currentAnswers == room.players.length;
@@ -254,29 +237,20 @@ export class RoomService {
         const _allAnswers = room.PlayersAnswers;
 
         room.players.forEach(player => {
-            
+
             let totalPointsEarned = 0;
 
 
             const playerAnswer = _allAnswers.get(player.id)?.charAt(room.currentQuestion);
 
-            let isCorrect = false;
-            console.log(playerAnswer);
-            if (playerAnswer == undefined || playerAnswer == null) { 
+            let isCorrect = false; 
+            if (playerAnswer == undefined || playerAnswer == null) {
                 isCorrect = false;
 
             }
             else {
                 isCorrect = Number(playerAnswer) == Number(currentAnswer) ? true : false;
-            }
-
-            console.log(`Player: ${player.name} answered: ${playerAnswer}`);
-
-
-
-
-
-
+            } 
             totalPointsEarned += isCorrect ? difficultyPoints : difficultyPoints * 0.2;
 
             //Check player time
@@ -294,14 +268,26 @@ export class RoomService {
                 totalPointsEarned += playerAnswerTime;
 
 
+            player.pointsEarned += totalPointsEarned;
+
+
+            while (currentQuestionState.cardsStack.length > 0) {
+                const cardEffect = currentQuestionState.cardsStack.pop();
+
+                cardEffect?.execute();
+            }
+            player.pointsEarned = Math.ceil(player.pointsEarned);
+            
             let playerScore: PlayerScore = {
                 playerID: player.id,
                 isAnswerCorrect: isCorrect,
                 scoreBeforeUpdated: player.score,
-                pointsEarned: totalPointsEarned
+                pointsEarned: player.pointsEarned
             };
-
-            player.score += totalPointsEarned;
+            
+            // Clear
+            player.score+=player.pointsEarned;
+            player.pointsEarned=0;
 
             response.scores.push(playerScore);
         })
@@ -324,69 +310,7 @@ export class RoomService {
         return result;
     }
 
-    public AddCardsFromQuizStart(roomCode: string): AddCardToRoomResponse | null {
-        const _room = this.GetRoomOrNullByCode(roomCode);
-        if (_room == null) return null;
-
-        const send: { [key: string]: string } = {};
-
-        const players = _room.players;
-        // const _cards = this.GetCardsFromPower(3);
-
-        players.forEach(player => {
-            // const randomIndex = Math.floor(Math.random() * this.Cards.length); 
-
-            send[player.id] = this.GetRandomCard().cardID.toString();
-        });
-
-        const response: AddCardToRoomResponse = {
-            playerIDtoCardID: send,
-        }
-
-        return response;
-    }
-
-    private GetCardsFromPower(power: number): Card[] {
-        let _cards: Card[] = [];
-        this.Cards.forEach(card => {
-            if (card.cardPW == power) {
-                _cards.push(card);
-            }
-        });
-
-        return _cards;
-    }
-
-    private GetRandomCard(): Card {
-
-
-        const maxValue = this.Cards.length;
-        const randomIndex = Math.floor(Math.random() * maxValue);
-        const card = this.Cards[randomIndex];
-        console.log(JSON.stringify(card));
-        return card;
-    }
-
-    public AddRandomCardToRoomCode(roomCode: string) {
-        const _room = this.GetRoomOrNullByCode(roomCode);
-        if (_room == null) {
-            return;
-        }
-
-        this.AddRandomCardToRoom(_room);
-    }
-
-    public AddRandomCardToRoom(room: Room) {
-        const Players: Player[] = room.players
-
-    }
-
-    handleCardUse(data: CardUsedByPlayerPayload) {
-
-    }
-
-    GetPlayerAnswer() {
-
-    }
+    
+ 
 
 }

@@ -66,12 +66,12 @@ export class PlayerController {
                 id: data.playerID,
                 name: data.username,
                 score: 0,
+                pointsEarned:0,
                 socketId: socket.id,
                 cards: '0,0'
             };
             room.AddPlayer(newPlayer);
-
-            console.log(`[HandlePlayerJoin] Player Add: ${JSON.stringify(newPlayer)}`);
+ 
             socket.join(data.roomCode);
 
             (socket as any).playerName = data.username; // Atribuição para uso em disconnect
@@ -110,15 +110,7 @@ export class PlayerController {
             // io.emit(`${ConnectionEvents.UpdatePlayers}`, quizService.getCurrentQuizState().players);
         });
     };
-
-    public handleDevCommands = (socket:Socket) => {
-        socket.on(DevEvents.AddRandomCard, (request:AddCardToRoomRequest) => {
-            console.log("[HandleDevCommands] Add To Everyone on Room a Random Card");
-
-            this.roomService.AddRandomCardToRoomCode(request.roomCode);
-            
-        })
-    }
+ 
 
 
 }

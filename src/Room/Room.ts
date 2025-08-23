@@ -17,6 +17,7 @@ export class Room {
     currentQuestion: number = 0;
     PlayersAnswers: Map<string, string> = new Map<string, string>();
     questionsStates:Array<QuestionState> = [];
+    
 
 
 
@@ -51,11 +52,7 @@ export class Room {
         if (this.quiz.questions[questionIndex] == null) return false;
 
         this.questionsStates[questionIndex].playersTime.set(playerID,answerTime);
-
-        const currentQuestion = this.quiz.questions[questionIndex];
-        
-        
-        
+   
         //First Question
         if (this.PlayersAnswers.get(playerID) == null) { 
             

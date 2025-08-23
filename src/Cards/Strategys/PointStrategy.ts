@@ -1,14 +1,36 @@
+import { Player } from "../../Player/model/Client";
 import { Room } from "../../Room/Room";
 import { RoomService } from "../../Room/RoomService";
 import { CardEffectStrategy } from "../CardEffectStrategy";
 
-export class DoublePointStrategy implements CardEffectStrategy{ 
-    execute(playerID: string, room:Room, targetID?: string): Promise<boolean> {
-        
-        
+export class DoublePointStrategy implements CardEffectStrategy {
+
+    public playerID: string = '';
+    public cardID: string = '';
+    public targetID?: string | undefined;
+    public room: Room | undefined;
+
+    save(playerID: string, room: Room, targetID?: string): boolean {
+        this.playerID = playerID;
+        this.room = room;
+        if (targetID) {
+            this.targetID = targetID;
+        }
 
 
-        return Promise.resolve(true);
+        return true;
+    }
+    execute(): void {
+        // O `this.room` e `this.playerID` já devem ter sido definidos pelo `save` ou construtor
+        const player = this.room?.GetPlayerByID(this.playerID);
+
+        // Se o jogador não for encontrado, lança um erro diretamente
+        if (!player) {
+            throw new Error(`Player with ID ${this.playerID} not found.`);
+        }
+
+        console.log(`Doubling player's points from ${player.pointsEarned} to ${player.pointsEarned * 2}`);
+        player.pointsEarned *= 2;
     }
 
 }

@@ -1,14 +1,23 @@
+import { CardEffectStrategy } from "./CardEffectStrategy"
+
 export interface Card{
     cardID:number,
     cardName:string,
     cardPW:number, // Powerup - 1/2/3
     cardType:CardType //0 - instant, 1 - delayed
-    cardChance:number // 0-low, 1 - medium, 2- high chance
+    cardChance:CardChance // 0-low, 1 - medium, 2- high chance
+    effect:CardEffectStrategy | undefined
 }
 
 
 
 export enum CardType{
-    INSTANT = 0,
-    DELAYED = 1,
+    Instant = 0,
+    Delayed = 1,
+}
+
+export enum CardChance{
+    Low = 0,
+    Medium = 1,
+    High = 2,
 }
