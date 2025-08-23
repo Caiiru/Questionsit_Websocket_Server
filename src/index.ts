@@ -1,5 +1,6 @@
 import { startServer } from './app';
 import { devConfig } from './config/environment';
+import { CardsLoader } from './utils/CardsLoader';
 import { QuizLoader } from './utils/QuizLoader';
 
 // Start the server using the configuration
@@ -15,5 +16,8 @@ startServer(PORT);
 // // console.log(j.Grasp.questions.length);
 // const quizLoader = new QuizLoader();
 // const quiz = quizLoader.StartQuizLoader();
+
+
+// const _cards = new CardsLoader().StartCardLoader();
 
 // console.log(quiz);

@@ -1,8 +1,7 @@
 import { QuizClient, Host, Player } from "../Player/model/Client";
 import { Quiz } from "../Quiz/Grasp";
 import { Answer, Question } from "../Quiz/models/Question";
-import { QuestionState } from "../Quiz/models/QuizState";
-import { logInfo } from "../utils/logger";
+import { QuestionState } from "../Quiz/models/QuizState"; 
 
 const SENDER_NAME = "Room";
 
@@ -18,6 +17,7 @@ export class Room {
     currentQuestion: number = 0;
     PlayersAnswers: Map<string, string> = new Map<string, string>();
     questionsStates:Array<QuestionState> = [];
+    
 
 
 
@@ -45,23 +45,19 @@ export class Room {
 
     public GetClientByID(clientID: string): QuizClient {
         let quizClient = this.clients.filter(p => p.id === clientID)[0];
-        logInfo(SENDER_NAME, `${String(quizClient)}`);
+        // logInfo(SENDER_NAME, `${String(quizClient)}`);
         return quizClient;
     }
     public SetPlayerAnswer(playerID: string, answer: string, questionIndex: number, answerTime:number) {
         if (this.quiz.questions[questionIndex] == null) return false;
 
         this.questionsStates[questionIndex].playersTime.set(playerID,answerTime);
-
-        const currentQuestion = this.quiz.questions[questionIndex];
-        
-        
-        
+   
         //First Question
         if (this.PlayersAnswers.get(playerID) == null) { 
             
             this.PlayersAnswers.set(playerID, answer)  
-            console.log(this.PlayersAnswers.entries()); 
+            // console.log(this.PlayersAnswers.entries()); 
             return;
         }; 
         const _answer = this.GetPlayerAnswer(playerID);

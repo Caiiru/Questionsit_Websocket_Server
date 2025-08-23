@@ -1,5 +1,6 @@
 export enum GameEvents{
     StartQuiz = "START_QUIZ", 
+    StartQuizWithCards= "START_QUIZ_CARDS",
     SendTime = "SEND_TIME",
     NextQuestion = "NEXT_QUESTION",
     DisplayFeedback = "DISPLAY_FEEDBACK",
