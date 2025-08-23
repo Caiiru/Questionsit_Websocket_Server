@@ -4,8 +4,8 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import { logInfo, logDebug, logError } from '../utils/logger';
 import { ConnectionEvents } from '../events/connectionEvents';
 import { PlayerController } from '../Player/controller/PlayerController'
-import { RoomService } from '../Room/RoomService';
-import { QuizController } from '../Quiz/controller/QuizController';
+import { RoomService } from '../Room/RoomService'; 
+import { QuizController } from '../Quiz/controller/quizController';
 
 const SENDER_NAME = "IndexController"
 

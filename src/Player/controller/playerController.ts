@@ -8,12 +8,8 @@ import { logDebug, logError, logInfo } from '../../utils/logger';
 import { CreateRoomRequest } from '../../Room/requests/CreateRoomRequest';
 import { HostResponse } from './responses/HostResponse';
 import { ConnectionResponse } from './responses/ConnectionResponse';
-import { Host, Player } from '../model/Client';
-import { playerEvents } from '../../events/playerEvents';
-import { PlayerAnswerRequest } from '../../Quiz/controller/requests/PlayerAnswerRequest';
-import { quizService } from '../../Quiz/QuizService';
-import { Room } from '../../Room/Room';
-
+import { Host, Player } from '../model/Client'; 
+import { AddCardToRoomRequest, DevEvents } from '../../utils/devEvents';
 const SENDER_NAME = "PlayerController";
 
 export class PlayerController {
@@ -58,7 +54,7 @@ export class PlayerController {
         socket.on(ConnectionEvents.JoinGame, (data: { roomCode: string, username: string, playerID: string, },) => {
 
 
-            let room = this.roomService.GetRoomByCode(data.roomCode);
+            let room = this.roomService.GetRoomOrNullByCode(data.roomCode);
 
             if (!room) {
                 socket.emit(ConnectionEvents.RoomJoinFailure, { message: "Room not found" });
@@ -75,7 +71,7 @@ export class PlayerController {
             };
             room.AddPlayer(newPlayer);
 
-            console.log(`Player Add: ${JSON.stringify(newPlayer)}`);
+            console.log(`[HandlePlayerJoin] Player Add: ${JSON.stringify(newPlayer)}`);
             socket.join(data.roomCode);
 
             (socket as any).playerName = data.username; // Atribuição para uso em disconnect
@@ -114,6 +110,15 @@ export class PlayerController {
             // io.emit(`${ConnectionEvents.UpdatePlayers}`, quizService.getCurrentQuizState().players);
         });
     };
+
+    public handleDevCommands = (socket:Socket) => {
+        socket.on(DevEvents.AddRandomCard, (request:AddCardToRoomRequest) => {
+            console.log("[HandleDevCommands] Add To Everyone on Room a Random Card");
+
+            this.roomService.AddRandomCardToRoomCode(request.roomCode);
+            
+        })
+    }
 
 
 }
