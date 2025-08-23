@@ -1,0 +1,25 @@
+{
+    "Cards": [
+        {
+            "cardID": 0,
+            "cardName": "Double Points",
+            "cardType": 1,
+            "cardPW": 2,
+            "cardChance": 1
+        },
+        {
+            "cardID": 1,
+            "cardName": "SingleDrop",
+            "cardType": 0,
+            "cardPW": 2,
+            "cardChance": 1
+        },
+        {
+            "cardID": 2,
+            "cardName": "Clear 1x",
+            "cardType": 0,
+            "cardPW": 3,
+            "cardChance": 2
+        }
+    ]
+}
