@@ -9,7 +9,7 @@ export const app = express();
 export const httpServer = createServer(app);
 export const io = new SocketIOServer(httpServer, {
     cors: {
-        origin: "http://localhost:7456",
+        origin: "*",
         methods: ["GET", "POST"],
         credentials: true
     }
