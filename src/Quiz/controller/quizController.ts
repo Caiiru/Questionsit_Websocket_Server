@@ -1,23 +1,17 @@
 
 // src/controllers/quizController.ts
 import { Socket } from 'socket.io';
-import { io } from '../../app';
-import { hostEvents } from '../../events/hostEvents';
+import { io } from '../../app'; 
 import { StartQuizRequest } from './requests/StartQuizRequest';
 import { RoomService } from '../../Room/RoomService';
 import { Room, RoomState } from '../../Room/Room';
-import { QuestionResponse } from './responses/QuestionResponse';
-import { logDebug } from '../../utils/logger';
+import { QuestionResponse } from './responses/QuestionResponse'; 
 import { playerEvents } from '../../events/playerEvents';
-import { PlayerAnswerRequest } from './requests/PlayerAnswerRequest';
-import { quizService } from '../QuizService';
-import { GameEvents } from '../../events/GameEvents';
-import { PlayersScoreResponse } from './responses/PlayersScoreResponse';
-import { json } from 'stream/consumers';
+import { PlayerAnswerRequest } from './requests/PlayerAnswerRequest'; 
+import { GameEvents } from '../../events/GameEvents'; 
 import { AddCardToRoomResponse, DevEvents } from '../../utils/devEvents';
 import { CardEvents, CardUsedByPlayerPayload } from '../../Cards/CardEvents';
-import { CardService } from '../../Cards/CardService';
-import { resolve } from 'path';
+import { CardService } from '../../Cards/CardService'; 
 import { CardType, InstantCardData } from '../../Cards/Card';
 import { CardInstantEffectStrategy } from '../../Cards/CardEffectStrategy';
 

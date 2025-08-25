@@ -2,10 +2,10 @@
 // src/controllers/index.ts (para agrupar e registrar todos os handlers)
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { logInfo, logDebug, logError } from '../utils/logger';
-import { ConnectionEvents } from '../events/connectionEvents';
-import { PlayerController } from '../Player/controller/PlayerController'
+import { ConnectionEvents } from '../events/connectionEvents'; 
 import { RoomService } from '../Room/RoomService'; 
 import { QuizController } from '../Quiz/controller/quizController';
+import { PlayerController } from '../Player/controller/playerController';
 
 const SENDER_NAME = "IndexController"
 

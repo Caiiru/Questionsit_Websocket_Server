@@ -1,12 +1,11 @@
 import { startServer } from './app';
-import { devConfig } from './config/environment';
-import { CardsLoader } from './utils/CardsLoader';
-import { QuizLoader } from './utils/QuizLoader';
+import { devConfig } from './config/environment'; 
 
 // Start the server using the configuration
-const PORT = devConfig.serverPort;
+// const PORT = devConfig.serverPort;
+const PORT = process.env.PORT || devConfig.serverPort;
 
-startServer(PORT);
+startServer(Number(PORT));
 
 
 // const jsonToLoad = fetch('utils/question.json');
