@@ -5,14 +5,20 @@ import { InstantCardData } from "../Card";
 import { CardEffectStrategy } from "../CardEffectStrategy";
 import { CardService } from "../CardService";
 
-export class DoublePointStrategy implements CardEffectStrategy {
-    
+export class AddPointsStrategy implements CardEffectStrategy {
+
     public cardService: CardService | undefined;
-    public roomService: RoomService | undefined; 
+    public roomService: RoomService | undefined;
     public playerID: string = '';
     public cardID: number = 0;
     public targetID?: string | undefined;
     public room: Room | undefined;
+
+    pointsToAdd: number = 0;
+
+    constructor(amount: number) {
+        this.pointsToAdd = amount;
+    }
 
     save(playerID: string, room: Room, targetID?: string): boolean {
         this.playerID = playerID;
@@ -32,9 +38,7 @@ export class DoublePointStrategy implements CardEffectStrategy {
         if (!player) {
             throw new Error(`Player with ID ${this.playerID} not found.`);
         }
-
-        console.log(`Doubling player's points from ${player.pointsEarned} to ${player.pointsEarned * 2}`);
-        player.pointsEarned *= 2;
+        player.pointsEarned += this.pointsToAdd;
     }
 
 }

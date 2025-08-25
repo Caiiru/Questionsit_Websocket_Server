@@ -18,6 +18,8 @@ import { AddCardToRoomResponse, DevEvents } from '../../utils/devEvents';
 import { CardEvents, CardUsedByPlayerPayload } from '../../Cards/CardEvents';
 import { CardService } from '../../Cards/CardService';
 import { resolve } from 'path';
+import { CardType, InstantCardData } from '../../Cards/Card';
+import { CardInstantEffectStrategy } from '../../Cards/CardEffectStrategy';
 
 const SENDER_NAME = "QuizController";
 export class QuizController {
@@ -41,7 +43,7 @@ export class QuizController {
     }
     handleQuizEvents(socket: Socket) {
 
-        if(!this.cardService)
+        if (!this.cardService)
             return;
 
         socket.on(GameEvents.StartQuiz, (quizRequest: StartQuizRequest) => {
@@ -53,14 +55,14 @@ export class QuizController {
                 throw new Error("Not Implemented");
             }
             const response: AddCardToRoomResponse | null = this.cardService!.AddCardsFromQuizStart(quizRequest.roomCode);
- 
+
 
             const handleRoundEnd = async () => {
 
                 const room = this.roomService.GetRoomOrNullByCode(quizRequest.roomCode);
-                if(!room) return;
+                if (!room) return;
 
-                await this.emitScores(room).catch(()=> {
+                await this.emitScores(room).catch(() => {
                     console.log("Error on handle round end ");
                 });
 
@@ -72,14 +74,14 @@ export class QuizController {
 
                 const room = this.roomService.GetRoomOrNullByCode(quizRequest.roomCode);
                 if (room == null) return;
- 
+
                 await handleRoundEnd();
 
 
             }, _questionResponse.question.time * 1000);
 
             this.roomTimers.set(quizRequest.roomCode, timeoutID);
-            if (response == null) { 
+            if (response == null) {
             }
             else {
                 io.to(quizRequest.roomCode).emit(CardEvents.SendRandomCard, response as AddCardToRoomResponse);
@@ -89,7 +91,7 @@ export class QuizController {
 
         socket.on(GameEvents.NextQuestion, (roomCode: string) => {
             const room: Room | null = this.roomService.GetRoomOrNullByCode(roomCode);
-            if (!room) { 
+            if (!room) {
                 return;
             }
             const hasNextQuestion = room.quiz.questions.length > room.currentQuestion + 1;
@@ -100,12 +102,15 @@ export class QuizController {
             }
 
             const _nextQuestion: QuestionResponse | null = this.roomService.GetNextRoomQuestion(room.roomCode);
+            const response: AddCardToRoomResponse | null = this.cardService!.AddCardsFromQuizStart(roomCode);
             io.to(room.roomCode).emit(GameEvents.NextQuestion, _nextQuestion as QuestionResponse);
-
+            if (response) {
+                io.to(roomCode).emit(CardEvents.SendRandomCard, response as AddCardToRoomResponse);
+            }
         })
 
     }
-    
+
     handlePlayerAnswer(socket: Socket) {
         socket.on(playerEvents.SUBMIT_ANSWER, async (answer: PlayerAnswerRequest) => {
 
@@ -113,22 +118,39 @@ export class QuizController {
 
             if (!room) {
                 return;
-            } 
+            }
 
             const canFinish = this.roomService.SetPlayerAnswer(answer, room);
             if (canFinish) {
                 io.to(answer.roomCode).emit(GameEvents.AllPlayerAnswered);
 
-                await this.emitScores(room).catch(()=>{
+                await this.emitScores(room).catch(() => {
                     console.log("Error on handle Player Answer ")
-                }); 
+                });
             }
         });
     }
     handleUsedCards(socket: Socket) {
         socket.on(CardEvents.PlayerUsedCard, async (data: CardUsedByPlayerPayload) => {
 
-            this.cardService?.useCard(data);
+            const cardUsedSuccessfully = this.cardService?.useCard(data);
+            if (!cardUsedSuccessfully){
+                return;
+            }
+
+            const card = this.cardService?.getCardByID(Number(data.cardID));
+
+            if(card?.cardType===CardType.Instant){
+                const _instantCard = card.effect as CardInstantEffectStrategy
+                const _instantEffectData = _instantCard.instantExecute();
+                if(!_instantEffectData)
+                {
+                    console.error("QuizController found null on instantExecute")
+                    return;
+                }
+                console.log(`Instant card used: ${JSON.stringify(_instantEffectData)}`);
+                socket.emit(CardEvents.SendCardInstantInfo, _instantEffectData as InstantCardData);
+            }
         })
     }
 
@@ -141,7 +163,7 @@ export class QuizController {
 
             io.to(room.roomCode).emit(GameEvents.SendScores, scoreResponse);
             const timerID = this.roomTimers.get(room.roomCode);
-            if(timerID){
+            if (timerID) {
                 clearTimeout(timerID);
                 this.roomTimers.delete(room.roomCode);
             }

@@ -21,3 +21,9 @@ export enum CardChance{
     Medium = 1,
     High = 2,
 }
+
+
+export interface InstantCardData{
+    cardID:number,
+    args:any
+}
