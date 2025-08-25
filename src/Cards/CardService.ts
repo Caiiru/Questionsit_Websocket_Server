@@ -6,7 +6,7 @@ import { RoomService } from "../Room/RoomService";
 import { CardEffectStrategy } from "./CardEffectStrategy";
 import { CardUsedByPlayerPayload } from "./CardEvents";
 import { CardsLoader } from "../utils/CardsLoader";
-import { Card } from "./Card";
+import { Card, CardType } from "./Card";
 import { AddCardToRoomResponse } from "../utils/devEvents";
 
 export class CardService {
@@ -21,8 +21,9 @@ export class CardService {
 
         // Inicialização do mapa de cartas de forma coesa
         const cardLoader = new CardsLoader();
-        this.cardMap = cardLoader.createCards();
+        this.cardMap = cardLoader.createCards(); 
     }
+
 
     // --- Métodos Principais ---
 
@@ -47,15 +48,16 @@ export class CardService {
         if (targetID !== null && card.effect) {
             card.effect.targetID = targetID;
         }
- 
+
+        card.effect.save(playerID, room, targetID, this, this.roomService);
         if (this.addCardToPlayerHistory(room, playerID, cardID.toString())) {
-            card.effect.save(playerID,room,targetID);
-            this.addCardToStack(room, card.effect);
+            if (card.cardType == CardType.Delayed)
+                this.addCardToStack(room, card.effect);
             return true;
         }
         return false;
     }
- 
+
     private validateRoomAndPlayer(roomCode: string, playerID: string): Room {
         const room = this.roomService.GetRoomOrNullByCode(roomCode);
         if (!room) {
@@ -67,10 +69,10 @@ export class CardService {
         }
         return room;
     }
- 
-    private getCardByID(cardID: number): Card | undefined {
+
+    public getCardByID(cardID: number): Card | undefined {
         return this.cardMap.get(cardID);
-    } 
+    }
     private addCardToPlayerHistory(room: Room, playerID: string, cardID: string): boolean {
         const currentState = room.questionsStates[room.currentQuestion];
         if (!currentState) {
@@ -83,7 +85,7 @@ export class CardService {
 
         return true;
     }
- 
+
     private addCardToStack(room: Room, cardEffect: CardEffectStrategy): boolean {
         const currentState = room.questionsStates[room.currentQuestion];
         if (!currentState) {
@@ -117,11 +119,29 @@ export class CardService {
 
 
     private GetRandomCard(): Card {
-        const maxValue = this.cardMap.size;
-        const randomIndex = Math.floor(Math.random() * maxValue);
-        const card = this.cardMap.get(randomIndex);
+        // Validação inicial: se o mapa estiver vazio, lance um erro
+        if (this.cardMap.size === 0) {
+            throw new Error("Cannot get a random card from an empty map.");
+        }
 
-        return card!;
+        // Obtém todas as chaves (IDs) do mapa em um array
+        const cardIDs = Array.from(this.cardMap.keys());
+
+        // Gera um índice aleatório para o array de chaves
+        const randomIndex = Math.floor(Math.random() * cardIDs.length);
+
+        // Usa o índice para obter uma chave aleatória
+        const randomCardID = cardIDs[randomIndex];
+
+        // Usa a chave aleatória para pegar a carta do mapa
+        const card = this.cardMap.get(randomCardID);
+
+        // Validação final para garantir que a carta não é nula
+        if (!card) {
+            throw new Error(`Failed to retrieve card with ID ${randomCardID}.`);
+        }
+
+        return card;
     }
 
     public AddRandomCardToRoomCode(roomCode: string) {
@@ -137,4 +157,6 @@ export class CardService {
         const Players: Player[] = room.players
 
     }
+
+
 }
