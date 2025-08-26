@@ -5,18 +5,6 @@ import { devConfig } from './config/environment';
 // const PORT = devConfig.serverPort;
 const PORT = process.env.PORT || devConfig.serverPort;
 
-startServer(Number(PORT));
+startServer(PORT);
 
-
-// const jsonToLoad = fetch('utils/question.json');
-// const j = require('./utils/questions.json');
-// console.log(j);
-// console.log(j.Grasp.questions);
-// // console.log(j.Grasp.questions.length);
-// const quizLoader = new QuizLoader();
-// const quiz = quizLoader.StartQuizLoader();
-
-
-// const _cards = new CardsLoader().StartCardLoader();
-
-// console.log(quiz);
+ 
