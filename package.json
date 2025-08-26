@@ -6,7 +6,7 @@
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "dev:watch": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc",
+    "build": "tsc && cpx \"src/**/*.json\" dist",
     "test": "echo 'Nenhum teste configurado ainda'"
   },
   "keywords": [],
@@ -22,6 +22,7 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.13",
     "@types/socket.io": "^3.0.1",
+    "cpx": "^1.2.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
