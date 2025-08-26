@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 const indexController = new IndexController();
 indexController.registerSocketHandlers(io); 
 
-export const startServer = (port: number) => {
+export const startServer = (port:any) => {
     httpServer.listen(port, () => {
         // Passando 'ServerCore' como sender
         logInfo('ServerCore', `Servidor HTTP e WebSocket escutando na porta ${port}`);
