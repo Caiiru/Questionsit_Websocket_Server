@@ -8,17 +8,21 @@ import { logDebug, logError, logInfo } from '../../utils/logger';
 import { CreateRoomRequest } from '../../Room/requests/CreateRoomRequest';
 import { HostResponse } from './responses/HostResponse';
 import { ConnectionResponse } from './responses/ConnectionResponse';
-import { Host, Player } from '../model/Client'; 
+import { Host, Player } from '../model/Client';
 import { AddCardToRoomRequest, DevEvents } from '../../utils/devEvents';
+import { QuizLoader } from '../../utils/QuizLoader';
 const SENDER_NAME = "PlayerController";
 
 export class PlayerController {
 
 
+    quizLoader:QuizLoader = new QuizLoader();
+
+    
     constructor(private roomService: RoomService) {
 
     }
-    public setHandlers(socket:Socket){ 
+    public setHandlers(socket: Socket) {
         this.handlePlayerJoin(socket);
         this.handlePlayerHostGame(socket);
         this.handlePlayerDisconnect(socket);
@@ -38,6 +42,7 @@ export class PlayerController {
 
             }
             room.AddClient(hostPlayer);
+
             socket.rooms.add(room?.roomCode);
             socket.join(room.roomCode);
 
@@ -66,12 +71,12 @@ export class PlayerController {
                 id: data.playerID,
                 name: data.username,
                 score: 0,
-                pointsEarned:0,
+                pointsEarned: 0,
                 socketId: socket.id,
                 cards: '0,0'
             };
             room.AddPlayer(newPlayer);
- 
+
             socket.join(data.roomCode);
 
             (socket as any).playerName = data.username; // Atribuição para uso em disconnect
@@ -94,13 +99,13 @@ export class PlayerController {
 
 
     };
- 
+
     public handlePlayerDisconnect = (socket: Socket) => {
         socket.on('disconnect', () => {
             console.log(`Um usuário desconectado: ${socket.id}`);
-            
+
             // quizService.removePlayerBySockedID(socket.id);
-            if(this.roomService.removePlayerBySocketID(socket.id)){
+            if (this.roomService.removePlayerBySocketID(socket.id)) {
 
             }
 
@@ -110,7 +115,7 @@ export class PlayerController {
             // io.emit(`${ConnectionEvents.UpdatePlayers}`, quizService.getCurrentQuizState().players);
         });
     };
- 
+
 
 
 }

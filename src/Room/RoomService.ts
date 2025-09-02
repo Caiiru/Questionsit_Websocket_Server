@@ -51,7 +51,7 @@ export class RoomService {
         newRoom.roomCode = request.roomCode ? request.roomCode : this.GenerateRoomCode();
 
         //GET ROOM FROM SERVER RESTFUL
-        const _quiz = new QuizLoader().StartQuizLoader();
+        const _quiz = new QuizLoader().GetQuizByID(Number(request.quizID));
 
         if (_quiz != null) {
             newRoom.quiz = _quiz;
@@ -166,6 +166,10 @@ export class RoomService {
 
         return room.quiz.questions[n];
 
+    }
+    
+    LoadQuizToRoomByIndex(qid: number) {
+        QuizLoader
     }
 
     IncreaseQuestionCounter(room: Room) {

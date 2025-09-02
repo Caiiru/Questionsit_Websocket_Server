@@ -1,29 +1,47 @@
+import { json } from "stream/consumers";
 import { Quiz } from "../Quiz/Grasp";
 import { Answer, Question } from "../Quiz/models/Question";
 
 
 export class QuizLoader {
 
-    quizLoaded:Quiz = new Quiz();
 
-    StartQuizLoader():Quiz | null {
+    GetQuizByID(index: number):Quiz|null {
 
         const jsonToLoad = require('../utils/questions.json');
-
-        const _quiz = this.GetQuizFromJson(jsonToLoad.Grasp);
-        if (_quiz == undefined) { 
+        const allGrasps = jsonToLoad.Grasps;
+         
+        if(index < 0 || index >= allGrasps.length){
+            console.error("Indice de Quiz indefinido");
             return null;
         }
-        this.quizLoaded = _quiz;
-        return this.quizLoaded;
+
+        const graspData = allGrasps[index];
+ 
+        const _quiz = this.GetQuizFromJson(graspData);
+        if(_quiz == undefined)
+            return null;
+
+        console.log(_quiz);
+
+        return _quiz;
+        const graspName = Object.keys(graspData[0]);
+        console.log(`Grasp Name ${graspName}`);
+        const questionData = graspData[index].questions;
+        
+
 
     }
+
+    quizLoaded: Quiz = new Quiz();
+
+  
 
     GetQuizFromJson(quizData: any): Quiz | undefined {
 
         let newGrasp: Quiz = new Quiz();
-        newGrasp.graspID = 'GraspID';
-        newGrasp.graspName = quizData.name;
+        // newGrasp.graspID = quizData.;
+        newGrasp.graspName = quizData.name; 
 
         for (let i: number = 0; i < quizData.questions.length; i++) {
             let answers: Answer[] = [];
@@ -44,7 +62,7 @@ export class QuizLoader {
 
             }
             newGrasp.questions.push(question);
-        } 
+        }
 
         return newGrasp;
     }
@@ -71,7 +89,7 @@ export class QuizLoader {
             type:${quiz.questions[i].type}
             time:${quiz.questions[i].time}
             answers:[ `
-                
+
             for (let j = 0; j < quiz.questions[i].answers.length; j++) {
                 quizString += `
                 
@@ -80,7 +98,7 @@ export class QuizLoader {
                     points:${quiz.questions[i].answers[j].points}
                     },`;
             }
-            quizString+=`
+            quizString += `
                 ]\n         },`
 
         }

@@ -20,9 +20,9 @@ app.get('/', (req, res) => {
 });
 
 const indexController = new IndexController();
-indexController.registerSocketHandlers(io); 
+indexController.registerSocketHandlers(io);
 
-export const startServer = (port:any) => {
+export const startServer = (port: any) => {
     httpServer.listen(port, () => {
         // Passando 'ServerCore' como sender
         logInfo('ServerCore', `Servidor HTTP e WebSocket escutando na porta ${port}`);
@@ -32,3 +32,4 @@ export const startServer = (port:any) => {
         process.exit(1);
     });
 };
+
