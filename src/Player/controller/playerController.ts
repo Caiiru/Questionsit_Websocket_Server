@@ -116,6 +116,12 @@ export class PlayerController {
         });
     };
 
+    public handleFirstConnection = (socket:Socket) => {
+        socket.on(ConnectionEvents.GetQuizzes, () => {
+            
+        });
+    }
+
 
 
 }

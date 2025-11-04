@@ -1,4 +1,3 @@
-import { Client } from "socket.io/dist/client";
 import { io } from "../app";
 import { ConnectionEvents } from "../events/connectionEvents";
 import { Player, QuizClient } from "../Player/model/Client";
@@ -19,6 +18,7 @@ import { AddCardToRoomResponse } from "../utils/devEvents";
 import { json } from "stream/consumers";
 import { CardUsedByPlayerPayload } from "../Cards/CardEvents";
 import { CardEffectStrategy } from "../Cards/CardEffectStrategy";
+import { quizService } from "../Quiz/quizService";
 
 export class RoomService {
 
@@ -314,6 +314,14 @@ export class RoomService {
         return result;
     }
 
+    public GetAllQuizzesName(){
+        var m_quizLoader = new QuizLoader();
+
+        var titles = m_quizLoader.GetAllQuizTitles();
+
+        console.log(titles);
+        // return titles;
+    }
     
  
 
