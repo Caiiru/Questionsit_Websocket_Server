@@ -24,10 +24,7 @@ export class QuizLoader {
 
         console.log(_quiz);
 
-        return _quiz;
-        const graspName = Object.keys(graspData[0]);
-        console.log(`Grasp Name ${graspName}`);
-        const questionData = graspData[index].questions;
+        return _quiz; 
         
 
 
@@ -39,9 +36,9 @@ export class QuizLoader {
 
     GetQuizFromJson(quizData: any): Quiz | undefined {
 
-        let newGrasp: Quiz = new Quiz();
+        let newQuiz: Quiz = new Quiz();
         // newGrasp.graspID = quizData.;
-        newGrasp.graspName = quizData.name; 
+        newQuiz.graspName = quizData.name; 
 
         for (let i: number = 0; i < quizData.questions.length; i++) {
             let answers: Answer[] = [];
@@ -61,10 +58,10 @@ export class QuizLoader {
                 answers: answers
 
             }
-            newGrasp.questions.push(question);
+            newQuiz.questions.push(question);
         }
 
-        return newGrasp;
+        return newQuiz;
     }
     GetAnswer(data: any): Answer | undefined {
         if (data) {
@@ -103,5 +100,15 @@ export class QuizLoader {
 
         }
         return quizString
+    }
+
+    public GetAllQuizTitles():string[]{
+
+        const jsonToLoad = require('../utils/questions.json');
+        const allGrasps = jsonToLoad.Grasps;
+
+        const quizTitles: string[] = allGrasps.map((grasp: { name: any; }) => grasp.name);
+
+        return quizTitles;
     }
 }

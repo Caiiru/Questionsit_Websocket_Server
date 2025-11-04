@@ -18,6 +18,8 @@ export class IndexController {
         this.roomService = new RoomService();
         this.playerController = new PlayerController(this.roomService);
         this.quizController = new QuizController(this.roomService);
+
+        this.roomService.GetAllQuizzesName();
     }
 
     registerSocketHandlers = (io: SocketIOServer) => {

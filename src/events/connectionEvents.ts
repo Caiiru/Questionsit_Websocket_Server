@@ -8,6 +8,8 @@ export const enum ConnectionEvents{
     Disconnected = "Disconnected",
     Error = "Error",
     UpdatePlayers = "UPDATE_PLAYERS_LIST",
+    
+    GetQuizzes = "GET_QUIZZES",
         
     //HOST OPTIONS
     HostGame = "HOST_GAME",

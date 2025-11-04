@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { IndexController } from './Controllers';
 import { logInfo, logError } from './utils/logger';
+import { RestfulController } from './Controllers/RestfulController';
 
 export const app = express();
 export const httpServer = createServer(app);
@@ -21,6 +22,9 @@ app.get('/', (req, res) => {
 
 const indexController = new IndexController();
 indexController.registerSocketHandlers(io);
+
+const restfulController = new RestfulController();
+// restfulController.Connect();
 
 export const startServer = (port: any) => {
     httpServer.listen(port, () => {

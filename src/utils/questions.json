@@ -225,6 +225,497 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Subjuntivo",
+            "questions": [
+                {
+                    "question": "Analise as frases e indique, nos conjuntos, qual delas mostra dúvida",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "Maria chega amanhã",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Maria chegará amanhã",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Espero que Maria chegue amanhã",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Maria chegou ontem",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Analise as frases e indique, nos conjuntos, qual delas mostra dúvida",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "Vou comprar um carro",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Comprarei um carro",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "É possível que eu compre um carro",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Eu comprei um carro novo",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Analise as frases e indique, nos conjuntos, qual delas mostra dúvida",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "Carlos realizou a venda da casa",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "É importante que Carlos realize a venda da casa",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Carlos realizará a venda da casa",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Carlos havia realizado a venda",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Analise as frases e indique, nos conjuntos, qual delas mostra dúvida",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "Eles viajam sempre com seus pets",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Eles viajarão e vão levar consigo seus pets",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Quando eles viajarem levarão junto seus pets",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Eles estão viajando agora",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Analise as frases e indique, nos conjuntos, qual delas mostra dúvida",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "Se cuidem, crianças!",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Nem todos os países cuidavam da preservação da natureza",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Eles cuidaram da limpeza do parque",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Se todos cuidassem da natureza, o mundo seria melhor",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                },
+                {
+                    "question": "Talvez ele (...) à festa. Qual é a forma verbal correta (Modo Subjuntivo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "vai",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "vá",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "iria",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "foi",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "É importante que você (...) o trabalho. Qual é a forma verbal correta (Subjuntivo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "faz",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "faça",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "fará",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "fizesse",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "É provável que eu (...) no fim de semana. Qual é a forma verbal correta (Subjuntivo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "viajei",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "viajo",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "viajaria",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "viaje",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                },
+                {
+                    "question": "Tomara que a gente (...) um ingresso para o show. Qual é a forma verbal correta (Subjuntivo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "conseguia",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "consiga",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "consegue",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "conseguiu",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "A gente (...) chegar a tempo, se correr. Qual é a forma verbal correta (Indicativo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "consiga",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "conseguiu",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "consegue",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "conseguiram",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Se eu (...) malha de lã não passaria frio. Qual é a forma verbal correta (Pretérito Imperfeito do Subjuntivo)?",
+                    "type": 0,
+                    "time": 30,
+                    "answers": [
+                        {
+                            "answer": "vesti",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "vista",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "vestisse",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "vestiria",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Se nós (...) sorte, encontraremos nosso amigo em casa ainda. Qual é a forma verbal correta (Futuro do Subjuntivo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "temos",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "tivermos",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "teremos",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "tivessem",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Se Ana e Clara (...) mais cedo, teriam tempo para um café. Qual é a forma verbal correta (Pretérito Imperfeito do Subjuntivo)?",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "chegam",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "chegaram",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "chegassem",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "chegariam",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Embora meu irmão não ______________ , pratica exercícios físicos.\" (Verbo GOSTAR)",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "gostará",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "goste",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "gostava",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "gostasse",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Quando vocês ________________ feijoada, vão se apaixonar por esse prato.\" (Verbo PROVAR)",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "prova",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "provaram",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "provarem",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "provassem",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"É provável que em Curitiba ______________ frio ainda em dezembro.\" (Verbo FAZER)",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "fará",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "fizesse",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "fazia",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "faça",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Se não ________________ flores, o mundo seria mais triste.\" (Verbo EXISTIR)",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "existia",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "existirá",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "existissem",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "exista",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Tomara que meu time ______________ campeão.\" (Verbo SER)",
+                    "type": 0,
+                    "time": 60,
+                    "answers": [
+                        {
+                            "answer": "seria",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "fosse",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "é",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "seja",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
