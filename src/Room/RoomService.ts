@@ -39,7 +39,7 @@ export class RoomService {
     public CreateRoom(request: CreateRoomRequest): Room | null {
         //VALIDATE HOST ID
 
-        if (request.hostID == 'null' || !request.hostID) { 
+        if (request.hostID == 'null' || !request.hostID) {
             return null;
         }
 
@@ -161,13 +161,13 @@ export class RoomService {
             cardsUsedByPlayer: new Map<string, string>(),
             cardsStack: new Array<CardEffectStrategy>(),
 
-        }  
+        }
         room.questionsStates[n] = questionState;
 
         return room.quiz.questions[n];
 
     }
-    
+
     LoadQuizToRoomByIndex(qid: number) {
         QuizLoader
     }
@@ -178,7 +178,7 @@ export class RoomService {
     public removePlayerBySocketID(socketID: string): boolean {
         this.Rooms.forEach(room => {
             if (room.GetHost().socketId === socketID) {
-                this.ClearRoom(room); 
+                this.ClearRoom(room);
                 return false;
             }
             const p: QuizClient | undefined = room.players.find(p => p.socketId === socketID);
@@ -205,8 +205,26 @@ export class RoomService {
         this.Rooms.delete(room.roomCode);
     }
 
-    public SetPlayerAnswer(data: PlayerAnswerRequest, room: Room): boolean { 
+    public SetPlayerAnswer(data: PlayerAnswerRequest, room: Room): boolean {
         let state = room.questionsStates[room.currentQuestion];
+
+        if (!state) {
+            console.warn(`Estado da pergunta ${room.currentQuestion} não encontrado. Inicializando...`);
+
+            // 2. Se 'state' é undefined, inicializa-o no array questionsStates
+            // É CRUCIAL que playersTime seja inicializado como um novo Map.
+            room.questionsStates[room.currentQuestion] = {
+                questionStartTime: Date.now(), // Ou o valor real de start time
+                playersTime: new Map<string, number>(),
+                correctAnswer: 0, // Valores padrão
+                playersAnswered: 0, // Valores padrão
+                cardsUsedByPlayer: new Map<string, string>(), // Valores padrão
+                cardsStack: [] // Valores padrão
+            } as QuestionState;
+
+            // Atribui o novo estado à variável 'state' para continuar
+            state = room.questionsStates[room.currentQuestion];
+        }
 
         state.playersTime.set(data.playerID, data.answerTime);
 
@@ -217,10 +235,12 @@ export class RoomService {
 
         room.PlayersAnswers.set(data.playerID, _previousAnswer + String(data.answer));
         room.questionsStates[room.currentQuestion].playersAnswered++;
- 
+
+        room.questionsStates[room.currentQuestion] = state;
 
         const currentAnswers = room.questionsStates[room.currentQuestion].playersAnswered;
         const canFinish = currentAnswers == room.players.length;
+
 
 
         return canFinish;
@@ -247,14 +267,14 @@ export class RoomService {
 
             const playerAnswer = _allAnswers.get(player.id)?.charAt(room.currentQuestion);
 
-            let isCorrect = false; 
+            let isCorrect = false;
             if (playerAnswer == undefined || playerAnswer == null) {
                 isCorrect = false;
 
             }
             else {
                 isCorrect = Number(playerAnswer) == Number(currentAnswer) ? true : false;
-            } 
+            }
             totalPointsEarned += isCorrect ? difficultyPoints : difficultyPoints * 0.2;
 
             //Check player time
@@ -281,17 +301,17 @@ export class RoomService {
                 cardEffect?.execute();
             }
             player.pointsEarned = Math.ceil(player.pointsEarned);
-            
+
             let playerScore: PlayerScore = {
                 playerID: player.id,
                 isAnswerCorrect: isCorrect,
                 scoreBeforeUpdated: player.score,
                 pointsEarned: player.pointsEarned
             };
-            
+
             // Clear
-            player.score+=player.pointsEarned;
-            player.pointsEarned=0;
+            player.score += player.pointsEarned;
+            player.pointsEarned = 0;
 
             response.scores.push(playerScore);
         })
@@ -314,7 +334,7 @@ export class RoomService {
         return result;
     }
 
-    public GetAllQuizzesName(){
+    public GetAllQuizzesName() {
         var m_quizLoader = new QuizLoader();
 
         var titles = m_quizLoader.GetAllQuizTitles();
@@ -322,7 +342,7 @@ export class RoomService {
         console.log(titles);
         // return titles;
     }
-    
- 
+
+
 
 }

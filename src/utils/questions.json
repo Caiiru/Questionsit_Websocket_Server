@@ -716,6 +716,389 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Ortografia: Uso de Ç e SS",
+            "questions": [
+                {
+                    "question": "Marque a opção com a grafia correta para as palavras: Bú__ola, o__o, extin__ão, a__ude",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Búçola, osso, extinção, assude",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Bússola, osso, extinção, açude",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Bússola, osso, extinção, assude",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Bússola, oço, extinção, açude",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Marque a opção com a grafia correta para as palavras: Odi__eia, crian__a, po__ível, barca__a",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Odisseia, crianssa, possivel, barcassa",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Odisseia, criança, pocivel, barcaça",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Odisseia, crianssa, possível, barcaça",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Odisseia, criança, possível, barcaça",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                },
+                {
+                    "question": "Marque a opção com a grafia correta para as palavras: Esperan__a, cren__a, profe__ora, pa__agem",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Esperança, crenssa, professora, paçagem",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Esperança, crença, professora, passagem",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Esperanssa, crenssa, profeçora, paçagem",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Esperanssa, crença, profeçora, passagem",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Maura estuda, __________ não aprende.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Mas",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Mais",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Más",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Máis",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Vendeu __________ ternos neste mês que no anterior.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Más",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Mas",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Mais",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Máis",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Bonitinha, __________ ordinária.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Mais",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Mas",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Más",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Máis",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"A população pede __________ segurança.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Mas",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Más",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Mais",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Máis",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Ela não é bonita, __________ conquista pela simpatia.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Mais",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Más",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Máis",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Mas",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Dizem as __________ línguas que ele vai ser o nosso prefeito.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Mais",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Mas",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Máis",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Más",
+                            "correct": 1,
+                            "points": 100
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Não sei _______ deixei meus óculos.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "aonde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "onde",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "aonde ou onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "o aonde",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Você sabe _______ ele vai?\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "aonde",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "aonde ou onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "aonde se",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Este é o lugar _______ encontramos paz.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "aonde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "onde",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "aonde ou onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "aonde que",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"Não lembro _______ guardamos as chaves.\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "aonde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "onde",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "aonde ou onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "aonde foi que",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                },
+                {
+                    "question": "Complete a frase: \"_______ você vai tão tarde?\"",
+                    "type": 0,
+                    "time": 50,
+                    "answers": [
+                        {
+                            "answer": "Onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "Aonde",
+                            "correct": 1,
+                            "points": 100
+                        },
+                        {
+                            "answer": "Aonde ou onde",
+                            "correct": 0,
+                            "points": 0
+                        },
+                        {
+                            "answer": "O aonde",
+                            "correct": 0,
+                            "points": 0
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
